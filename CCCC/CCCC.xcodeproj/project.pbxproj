@@ -15,6 +15,7 @@
 		48AFA366248A2BA7002CAFDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48AFA364248A2BA7002CAFDC /* LaunchScreen.storyboard */; };
 		48AFA371248A2BA7002CAFDC /* CCCCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA370248A2BA7002CAFDC /* CCCCTests.swift */; };
 		48AFA37E248A2CF7002CAFDC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 48AFA37D248A2CF7002CAFDC /* README.md */; };
+		48AFA380248A2DA0002CAFDC /* Cacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA37F248A2DA0002CAFDC /* Cacher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		48AFA370248A2BA7002CAFDC /* CCCCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCCCTests.swift; sourceTree = "<group>"; };
 		48AFA372248A2BA7002CAFDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48AFA37D248A2CF7002CAFDC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		48AFA37F248A2DA0002CAFDC /* Cacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cacher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				48AFA359248A2BA5002CAFDC /* AppDelegate.swift */,
 				48AFA35B248A2BA5002CAFDC /* SceneDelegate.swift */,
 				48AFA35D248A2BA5002CAFDC /* ContentView.swift */,
+				48AFA37F248A2DA0002CAFDC /* Cacher.swift */,
 				48AFA35F248A2BA7002CAFDC /* Assets.xcassets */,
 				48AFA364248A2BA7002CAFDC /* LaunchScreen.storyboard */,
 				48AFA367248A2BA7002CAFDC /* Info.plist */,
@@ -213,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48AFA35A248A2BA5002CAFDC /* AppDelegate.swift in Sources */,
+				48AFA380248A2DA0002CAFDC /* Cacher.swift in Sources */,
 				48AFA35C248A2BA5002CAFDC /* SceneDelegate.swift in Sources */,
 				48AFA35E248A2BA5002CAFDC /* ContentView.swift in Sources */,
 			);

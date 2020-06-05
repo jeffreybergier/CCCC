@@ -31,6 +31,11 @@ import Foundation
 
 class Cacher<T: Codable> {
     
+    enum Change {
+        case initialLoad
+        case update(T)
+    }
+    
     typealias OriginalLoad = ((Result<T, Error>) -> Void) -> Void
     typealias CacheRead = ((Result<(expiration: Date, data: T), Error>) -> Void) -> Void
     typealias CacheWrite = (_ expirationDate: Date, _ data: T) -> Result<Void, Error>
@@ -42,8 +47,15 @@ class Cacher<T: Codable> {
     private let expiresIn: TimeInterval
     
     // Observer
-    @Published var data: Result<T, Swift.Error> = .failure(NSError())
-            
+    private let _observe = CurrentValueSubject<Change, Error>(.initialLoad)
+    private(set) lazy var observe: AnyPublisher<Change, Error> = {
+        return  AnyPublisher(
+            _observe.handleEvents(receiveSubscription: { _ in
+                self.update()
+            })
+        )
+    }()
+    
     init(originalLoad: @escaping OriginalLoad,
          cacheRead: @escaping CacheRead,
          cacheWrite: @escaping CacheWrite,
@@ -53,35 +65,50 @@ class Cacher<T: Codable> {
         self.cacheRead = cacheRead
         self.cacheWrite = cacheWrite
         self.expiresIn = expiresIn
-        self.update()
     }
     
     private var timer: Timer?
     @objc private func update() {
         self.timer?.invalidate()
         self.timer = nil
-        self.cacheRead { result in
+        self.work { [unowned self] result in
+            switch result {
+            case .success(let data):
+                self._observe.send(.update(data))
+            case .failure(let error):
+                self._observe.send(completion: .failure(error))
+            }
+        }
+    }
+    
+    private func work(completion: @escaping (Result<T, Error>) -> Void) {
+        self.cacheRead { [unowned self] result in
             let now = Date()
             if case .success(let tuple) = result, now.timeIntervalSince(tuple.expiration) > 0 {
-                self.data = .success(tuple.data)
+                let expirationGap = now.timeIntervalSince(tuple.expiration)
+                self.resetTimer(with: expirationGap)
+                completion(.success(tuple.data))
             } else {
                 self.originalLoad { result in
                     switch result {
                     case .success(let data):
                         let expirationDate = now.addingTimeInterval(self.expiresIn)
                         try? self.cacheWrite(expirationDate, data).get()
-                        self.timer = Timer.scheduledTimer(timeInterval: self.expiresIn + 1,
-                                                          target: self,
-                                                          selector: #selector(self.update),
-                                                          userInfo: nil,
-                                                          repeats: false)
-                        self.data = .success(data)
+                        self.resetTimer(with: self.expiresIn)
+                        completion(.success(data))
                     case .failure(let error):
-                        self.data = .failure(error)
+                        completion(.failure(error))
                     }
-                    
                 }
             }
         }
+    }
+    
+    private func resetTimer(with interval: TimeInterval) {
+        self.timer = Timer.scheduledTimer(timeInterval: interval + 1,
+                                          target: self,
+                                          selector: #selector(self.update),
+                                          userInfo: nil,
+                                          repeats: false)
     }
 }

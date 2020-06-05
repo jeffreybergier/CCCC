@@ -31,14 +31,19 @@ import Foundation
 
 class Cacher<T: Codable> {
     
+    struct Cache: Codable {
+        var expirationDate: Date
+        var payload: T
+    }
+    
     enum Change {
         case initialLoad
         case update(T)
     }
     
-    typealias OriginalLoad = ((Result<T, Error>) -> Void) -> Void
-    typealias CacheRead = ((Result<(expiration: Date, data: T), Error>) -> Void) -> Void
-    typealias CacheWrite = (_ expirationDate: Date, _ data: T) -> Result<Void, Error>
+    typealias OriginalLoad = () -> Future<T, Error>
+    typealias CacheRead = () -> Future<Cache, Error>
+    typealias CacheWrite = (Cache) -> Future<Void, Error>
     
     // Constants
     private let originalLoad: OriginalLoad
@@ -47,13 +52,29 @@ class Cacher<T: Codable> {
     private let expiresIn: TimeInterval
     
     // Observer
-    private let _observe = CurrentValueSubject<Change, Error>(.initialLoad)
-    private(set) lazy var observe: AnyPublisher<Change, Error> = {
-        return  AnyPublisher(
-            _observe.handleEvents(receiveSubscription: { _ in
-                self.update()
-            })
-        )
+    private(set) lazy var observe: AnyPublisher<T, Error> = {
+        let now = Date()
+        let timer = Timer.TimerPublisher(interval: 0,
+                                         runLoop: .main,
+                                         mode: .default)
+            .autoconnect()
+            .mapError { _ in NSError() as Error }
+//        return timer
+//            .flatMap { [cacheRead] _ in cacheRead() }
+        return self.cacheRead()
+            .tryMap { cache -> Cache in
+                guard now.timeIntervalSince(cache.expirationDate) > 0 else { throw NSError() }
+                return cache
+            }.catch { [expiresIn, originalLoad] _ in originalLoad().map {
+                Cache(
+                    expirationDate: now + expiresIn,
+                    payload: $0
+                )
+            }.eraseToAnyPublisher()
+            }.flatMap { [cacheWrite] cache in
+                cacheWrite(cache).map { cache }
+            }.map { $0.payload }
+            .eraseToAnyPublisher()
     }()
     
     init(originalLoad: @escaping OriginalLoad,
@@ -65,50 +86,5 @@ class Cacher<T: Codable> {
         self.cacheRead = cacheRead
         self.cacheWrite = cacheWrite
         self.expiresIn = expiresIn
-    }
-    
-    private var timer: Timer?
-    @objc private func update() {
-        self.timer?.invalidate()
-        self.timer = nil
-        self.work { [unowned self] result in
-            switch result {
-            case .success(let data):
-                self._observe.send(.update(data))
-            case .failure(let error):
-                self._observe.send(completion: .failure(error))
-            }
-        }
-    }
-    
-    private func work(completion: @escaping (Result<T, Error>) -> Void) {
-        self.cacheRead { [unowned self] result in
-            let now = Date()
-            if case .success(let tuple) = result, now.timeIntervalSince(tuple.expiration) > 0 {
-                let expirationGap = now.timeIntervalSince(tuple.expiration)
-                self.resetTimer(with: expirationGap)
-                completion(.success(tuple.data))
-            } else {
-                self.originalLoad { result in
-                    switch result {
-                    case .success(let data):
-                        let expirationDate = now.addingTimeInterval(self.expiresIn)
-                        try? self.cacheWrite(expirationDate, data).get()
-                        self.resetTimer(with: self.expiresIn)
-                        completion(.success(data))
-                    case .failure(let error):
-                        completion(.failure(error))
-                    }
-                }
-            }
-        }
-    }
-    
-    private func resetTimer(with interval: TimeInterval) {
-        self.timer = Timer.scheduledTimer(timeInterval: interval + 1,
-                                          target: self,
-                                          selector: #selector(self.update),
-                                          userInfo: nil,
-                                          repeats: false)
     }
 }

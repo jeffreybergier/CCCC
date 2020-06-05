@@ -26,20 +26,29 @@
 //  SOFTWARE.
 //
 
+import Combine
 import XCTest
 @testable import CCCC
 
 class CacherTests: XCTestCase {
+    
+    var token: AnyCancellable?
 
     func testCacherObserve() throws {
-        let cacher = Cacher<Data>(originalLoad: { completion in fatalError() },
-                                  cacheRead: { completion in fatalError() },
-                                  cacheWrite: { (expirationDate, data) in fatalError() },
-                                  expiresIn: 30)
-        cacher.observe.sink(receiveCompletion: { _ in }, receiveValue: { change in
+        let cacher = Cacher<Data>(originalLoad: { fatalError() },
+                                  cacheRead: { fatalError() },
+                                  cacheWrite: { _ in fatalError() },
+                                  expiresIn: 3)
+        let exp = XCTestExpectation()
+        self.token = cacher.observe.sink(receiveCompletion:
+            { error in
+                print(error)
+                print("goodbye")
+        }, receiveValue: { change in
             print(change)
             print("hello")
         })
+        self.wait(for: [exp], timeout: 10)
     }
 
 }

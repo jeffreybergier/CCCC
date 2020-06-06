@@ -30,7 +30,7 @@ import SwiftUI
 
 struct CurrencyConverter: View {
     
-    @ObservedObject var dataSource: CurrencyDataSource
+    @ObservedObject var dataSource: AbstractCurrencyDataSource
     @State var currencyInput = ""
     
     var body: some View {
@@ -41,11 +41,11 @@ struct CurrencyConverter: View {
     }
 }
 
-//struct CurrencyConverter_Previews: PreviewProvider {
-//    static var previews: some View {
-//        CurrencyConverter()
-//    }
-//}
+struct CurrencyConverter_Previews: PreviewProvider {
+    static var previews: some View {
+        CurrencyConverter(dataSource: SWIFT_PREVIEWS_currencyDataSource())
+    }
+}
 
 struct ViewSwitch: View {
     @Binding var value: CurrencyDataSource.Base.Value

@@ -27,19 +27,28 @@
 //
 
 import Combine
+import Foundation
 
-class CurrencyDataSource: ObservableObject {
+// Real Data Source Used for the App
+// See `SwiftPreviewsContent.swift` for the dummy subclass for Swift Previews
+class CurrencyDataSource: AbstractCurrencyDataSource {
+    init() {
+        super.init(networkLoad: networkLoad, expiresIn: 60*30) // 30 minute timer
+    }
+}
+
+class AbstractCurrencyDataSource: ObservableObject {
     
     typealias Base = Cacher<CurrencyModel>
     
     @Published var model: Base.Value = .initialLoad
     private let cacher: Base
     
-    init() {
+    init(networkLoad: @escaping Base.OriginalLoad, expiresIn: TimeInterval) {
         self.cacher = Cacher<CurrencyModel>(originalLoad: networkLoad,
                                            cacheRead: cacheRead,
                                            cacheWrite: cacheWrite,
-                                           expiresIn: 60*60*24)
+                                           expiresIn: expiresIn)
         self.token = self.cacher.observe.assign(to: \.model, on: self)
     }
     

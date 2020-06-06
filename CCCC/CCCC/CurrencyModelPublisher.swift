@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
+//  CurrencyModelPublisher.swift
 //  CCCC
 //
-//  Created by Jeffrey Bergier on 2020/06/05.
+//  Created by Jeffrey Bergier on 2020/06/06.
 //  Copyright © 2020 Jeffrey Bergier.
 //
 //  MIT License
@@ -26,22 +26,8 @@
 //  SOFTWARE.
 //
 
-import SwiftUI
+import Combine
 
-struct CurrencyConverter: View {
-    
-    @ObservedObject var currencies = CurrencyModelPublisher()
-    @State var currencyInput = ""
-    
-    var body: some View {
-        VStack {
-            CurrencyEntry(entry: currencyInput)
-        }
-    }
-}
-
-struct CurrencyConverter_Previews: PreviewProvider {
-    static var previews: some View {
-        CurrencyConverter()
-    }
+class CurrencyModelPublisher: ObservableObject {
+    @Published var model = 0
 }

@@ -34,9 +34,12 @@ struct CurrencyConverter: View {
     @State var currencyInput = ""
     
     var body: some View {
-        VStack {
-            CurrencyEntry(entry: $currencyInput)
-            ViewSwitch(value: $dataSource.model)
+        NavigationView {
+            VStack {
+                CurrencyEntry(entry: $currencyInput).padding()
+                ViewSwitch(value: $dataSource.model)
+            }
+            .navigationBarTitle("Ｃ四つ", displayMode: .inline)
         }
     }
 }
@@ -52,11 +55,19 @@ struct ViewSwitch: View {
     var body: some View {
         switch value {
         case .initialLoad:
-            return AnyView(Text("Loading…"))
+            return AnyView(VStack{
+                Spacer()
+                Text("Loading…")
+                Spacer()
+            })
         case .newValue(let model):
             return AnyView(CurrencyTable(data: model.quotes))
         case .error:
-            return AnyView(Text("Network Error Ocurred"))
+            return AnyView(VStack{
+                Spacer()
+                Text("Network Error Ocurred")
+                Spacer()
+            })
         }
     }
 }

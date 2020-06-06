@@ -36,11 +36,6 @@ class Cacher<T: Codable> {
         var payload: T
     }
     
-    enum Change {
-        case initialLoad
-        case update(T)
-    }
-    
     typealias OriginalLoad = () -> Future<T, Error>
     typealias CacheRead = () -> Future<Cache, Error>
     typealias CacheWrite = (Cache) -> Future<Void, Error>
@@ -53,21 +48,21 @@ class Cacher<T: Codable> {
     
     // Observer
     private(set) lazy var observe: AnyPublisher<T, Error> = {
-        let now = Date()
         let timer = Timer.TimerPublisher(interval: 0,
                                          runLoop: .main,
                                          mode: .default)
             .autoconnect()
-            .mapError { _ in NSError() as Error }
+            .mapError { _ in NSError.generic() }
 //        return timer
 //            .flatMap { [cacheRead] _ in cacheRead() }
         return self.cacheRead()
             .tryMap { cache -> Cache in
-                guard now.timeIntervalSince(cache.expirationDate) > 0 else { throw NSError() }
+                guard cache.expirationDate.timeIntervalSince(Date()) > 0
+                    else { throw NSError.generic() }
                 return cache
             }.catch { [expiresIn, originalLoad] _ in originalLoad().map {
                 Cache(
-                    expirationDate: now + expiresIn,
+                    expirationDate: Date() + expiresIn,
                     payload: $0
                 )
             }.eraseToAnyPublisher()
@@ -86,5 +81,11 @@ class Cacher<T: Codable> {
         self.cacheRead = cacheRead
         self.cacheWrite = cacheWrite
         self.expiresIn = expiresIn
+    }
+}
+
+extension NSError {
+    static func generic() -> Error {
+        return NSError(domain: "CCCC", code: 0, userInfo: nil)
     }
 }

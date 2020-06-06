@@ -36,6 +36,11 @@ class CacherTests: XCTestCase {
     typealias _Cacher = Cacher<String>
     
     var token: AnyCancellable?
+    
+    override func tearDownWithError() throws {
+        self.token?.cancel()
+        self.token = nil
+    }
 
     func test_cache_valid() throws {
         let exp = XCTestExpectation()
@@ -54,22 +59,24 @@ class CacherTests: XCTestCase {
                 exp.fulfill()
                 XCTAssertEqual(cache.payload, "From Cache")
                 return Future { $0(.success(())) }
-            }, expiresIn: 3)
+            }, expiresIn: 10000)
 
         self.token = cacher.observe.sink(receiveCompletion:
-            { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail(error.localizedDescription)
-                case .finished:
-                    exp.fulfill()
-                }
+            { _ in
+                XCTFail()
             }, receiveValue: { value in
-                XCTAssertEqual(value, "From Cache")
-                exp.fulfill()
+            switch value {
+                case .initialLoad:
+                    exp.fulfill()
+                case .newValue(let value):
+                    exp.fulfill()
+                    XCTAssertEqual(value, "From Cache")
+                case .error:
+                    XCTFail()
+                }
             }
         )
-        self.wait(for: [exp], timeout: 0)
+        self.wait(for: [exp], timeout: 0.1)
     }
     
     func test_cache_expired() throws {
@@ -89,22 +96,24 @@ class CacherTests: XCTestCase {
                 exp.fulfill()
                 XCTAssertEqual(cache.payload, "From Network")
                 return Future { $0(.success(())) }
-            }, expiresIn: 3)
+            }, expiresIn: 10000)
 
         self.token = cacher.observe.sink(receiveCompletion:
-            { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail(error.localizedDescription)
-                case .finished:
-                    exp.fulfill()
-                }
+            { _ in
+                XCTFail()
             }, receiveValue: { value in
-                XCTAssertEqual(value, "From Network")
-                exp.fulfill()
+            switch value {
+                case .initialLoad:
+                    exp.fulfill()
+                case .newValue(let value):
+                    exp.fulfill()
+                    XCTAssertEqual(value, "From Network")
+                case .error:
+                    XCTFail()
+                }
             }
         )
-        self.wait(for: [exp], timeout: 0)
+        self.wait(for: [exp], timeout: 0.1)
     }
     
     func test_cache_fail() throws {
@@ -122,27 +131,29 @@ class CacherTests: XCTestCase {
                 exp.fulfill()
                 XCTAssertEqual(cache.payload, "From Network")
                 return Future { $0(.success(())) }
-            }, expiresIn: 3)
+            }, expiresIn: 10000)
 
         self.token = cacher.observe.sink(receiveCompletion:
-            { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail(error.localizedDescription)
-                case .finished:
-                    exp.fulfill()
-                }
+            { _ in
+                XCTFail()
             }, receiveValue: { value in
-                XCTAssertEqual(value, "From Network")
-                exp.fulfill()
+            switch value {
+                case .initialLoad:
+                    exp.fulfill()
+                case .newValue(let value):
+                    exp.fulfill()
+                    XCTAssertEqual(value, "From Network")
+                case .error:
+                    XCTFail()
+                }
             }
         )
-        self.wait(for: [exp], timeout: 0)
+        self.wait(for: [exp], timeout: 0.1)
     }
     
     func test_networkAndCache_fail() throws {
         let exp = XCTestExpectation()
-        exp.expectedFulfillmentCount = 3
+        exp.expectedFulfillmentCount = 4
         
         let cacher =
             _Cacher(originalLoad: {
@@ -154,22 +165,90 @@ class CacherTests: XCTestCase {
             }, cacheWrite: { cache in
                 XCTFail()
                 return Future { $0(.failure(NSError.generic())) }
-            }, expiresIn: 3)
+            }, expiresIn: 10000)
+
+        self.token = cacher.observe.sink(receiveCompletion:
+            { _ in
+                XCTFail()
+            }, receiveValue: { value in
+                switch value {
+                    case .initialLoad:
+                        exp.fulfill()
+                    case .newValue:
+                        XCTFail()
+                    case .error:
+                        exp.fulfill()
+                    }
+            }
+        )
+        self.wait(for: [exp], timeout: 0.1)
+    }
+    
+    func test_success_repeat() throws {
+        let exp = XCTestExpectation()
+        exp.expectedFulfillmentCount = 7
+        
+        let cacher =
+            _Cacher(originalLoad: {
+                exp.fulfill()
+                return Future { $0(.success("From Network")) }
+            }, cacheRead: {
+                exp.fulfill()
+                return Future { $0(.failure(NSError.generic())) }
+            }, cacheWrite: { cache in
+                exp.fulfill()
+                XCTAssertEqual(cache.payload, "From Network")
+                return Future { $0(.success(())) }
+            }, expiresIn: 0.4)
 
         self.token = cacher.observe.sink(receiveCompletion:
             { completion in
-                switch completion {
-                case .failure(let error):
+                XCTFail()
+            }, receiveValue: { value in
+                switch value {
+                case .initialLoad:
                     exp.fulfill()
-                    XCTAssertEqual(error.localizedDescription, "The operation couldn’t be completed. (CCCC error 0.)")
-                case .finished:
+                case .newValue(let value):
+                    exp.fulfill()
+                    XCTAssertEqual(value, "From Network")
+                case .error:
                     XCTFail()
                 }
-            }, receiveValue: { value in
-                XCTFail()
             }
         )
-        self.wait(for: [exp], timeout: 0)
+        self.wait(for: [exp], timeout: 1)
     }
+    
+    func test_fail_repeat() throws {
+        let exp = XCTestExpectation()
+        exp.expectedFulfillmentCount = 7
+        
+        let cacher =
+            _Cacher(originalLoad: {
+                exp.fulfill()
+                return Future { $0(.failure(NSError.generic())) }
+            }, cacheRead: {
+                exp.fulfill()
+                return Future { $0(.failure(NSError.generic())) }
+            }, cacheWrite: { cache in
+                XCTFail()
+                return Future { $0(.failure(NSError.generic())) }
+            }, expiresIn: 0.4)
 
+        self.token = cacher.observe.sink(receiveCompletion:
+            { completion in
+                XCTFail()
+            }, receiveValue: { value in
+                switch value {
+                case .initialLoad:
+                    exp.fulfill()
+                case .newValue:
+                    XCTFail()
+                case .error:
+                    exp.fulfill()
+                }
+            }
+        )
+        self.wait(for: [exp], timeout: 1)
+    }
 }

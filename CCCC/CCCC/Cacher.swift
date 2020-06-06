@@ -36,6 +36,12 @@ class Cacher<T: Codable> {
         var payload: T
     }
     
+    enum Value {
+        case initialLoad
+        case newValue(T)
+        case error(Error)
+    }
+    
     typealias OriginalLoad = () -> Future<T, Error>
     typealias CacheRead = () -> Future<Cache, Error>
     typealias CacheWrite = (Cache) -> Future<Void, Error>
@@ -47,29 +53,17 @@ class Cacher<T: Codable> {
     private let expiresIn: TimeInterval
     
     // Observer
-    private(set) lazy var observe: AnyPublisher<T, Error> = {
-        let timer = Timer.TimerPublisher(interval: 0,
-                                         runLoop: .main,
-                                         mode: .default)
-            .autoconnect()
-            .mapError { _ in NSError.generic() }
-//        return timer
-//            .flatMap { [cacheRead] _ in cacheRead() }
-        return self.cacheRead()
-            .tryMap { cache -> Cache in
-                guard cache.expirationDate.timeIntervalSince(Date()) > 0
-                    else { throw NSError.generic() }
-                return cache
-            }.catch { [expiresIn, originalLoad] _ in originalLoad().map {
-                Cache(
-                    expirationDate: Date() + expiresIn,
-                    payload: $0
-                )
-            }.eraseToAnyPublisher()
-            }.flatMap { [cacheWrite] cache in
-                cacheWrite(cache).map { cache }
-            }.map { $0.payload }
-            .eraseToAnyPublisher()
+    private let _observe: CurrentValueSubject<Value, Never> = .init(.initialLoad)
+    private(set) lazy var observe: AnyPublisher<Value, Never> = {
+        return _observe.handleEvents(receiveSubscription: { [weak self] _ in
+            // Dispatch Async so the subscription finishes before calling `update`
+            DispatchQueue.main.async { self?.update() }
+        }, receiveCancel: { [weak self] in
+            // cleanup when we're done
+            self?.timer?.invalidate()
+            self?.timer = nil
+        })
+        .eraseToAnyPublisher()
     }()
     
     init(originalLoad: @escaping OriginalLoad,
@@ -81,6 +75,69 @@ class Cacher<T: Codable> {
         self.cacheRead = cacheRead
         self.cacheWrite = cacheWrite
         self.expiresIn = expiresIn
+    }
+    
+    private var timer: Timer?
+    private var token: AnyCancellable?
+    @objc private func update() {
+        // Configure the timer if needed
+        if timer == nil {
+            self.timer = Timer.scheduledTimer(timeInterval: self.expiresIn,
+                                              target: self,
+                                              selector: #selector(self.update),
+                                              userInfo: nil,
+                                              repeats: true)
+            // if this is first load we also want to send the ".initialLoading" state
+            self._observe.send(.initialLoad)
+        }
+        self.token =
+            // 1) Try to load from the cache
+            self.cacheRead()
+            // 2) If the cache is expired throw an error down the stream
+            .tryMap { cache -> Cache in
+                guard cache.expirationDate.timeIntervalSince(Date()) > 0
+                    else { throw NSError.generic() }
+                return cache
+            // 3) Catch any cache errors and convert them
+            //    into a network request
+            }.catch { [expiresIn, originalLoad] _ in
+                // 4) Convert the network request into something cachable
+                return originalLoad().map {
+                    Cache(
+                        expirationDate: Date() + expiresIn,
+                        payload: $0
+                    )
+                }
+            // 5) Cache the network request to disk
+            //    This has the side effect of also caching
+            //    the original cache to the disk again
+            //    later we could find a way to take that out if needed
+            }.flatMap { [cacheWrite] cache in
+                cacheWrite(cache).map { cache }
+            }.map { $0.payload }
+            // 6) Get the final values out and send them through our publisher
+            .sink(receiveCompletion: { [weak self] in
+                guard case .failure(let error) = $0 else { return }
+                self?._observe.send(.error(error))
+                self?.invalidate()
+            }, receiveValue: { [weak self] in
+                self?._observe.send(.newValue($0))
+                self?.invalidate()
+            })
+    }
+    
+    private func invalidate() {
+        self.token?.cancel()
+        self.token = nil
+    }
+    
+    deinit {
+        self.timer?.invalidate()
+        self.timer = nil
+        self.invalidate()
+        // In DEBUG mode print deinit to verify no
+        // memory leaks during unit testing
+        assert({ print("DEINIT"); return true; }())
     }
 }
 

@@ -42,7 +42,7 @@ private let kAPIURL: URL = {
     return c.url!
 }()
 
-let networkLoad: Cacher<Data>.OriginalLoad = {
+let networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
     Future { promise in
         let task = URLSession.shared.dataTask(with: kAPIURL) { (data, response, error) in
             DispatchQueue.main.async {
@@ -58,7 +58,12 @@ let networkLoad: Cacher<Data>.OriginalLoad = {
                     promise(.failure(NSError.generic()))
                     return
                 }
-                promise(.success(data))
+                do {
+                    let model = try JSONDecoder().decode(CurrencyModel.self, from: data)
+                    promise(.success(model))
+                } catch {
+                    promise(.failure(error))
+                }
             }
         }
     }

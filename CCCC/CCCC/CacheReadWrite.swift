@@ -34,12 +34,12 @@ private let kCacheURL: URL = {
     return cache.appendingPathComponent("CCCC_cache.plist")
 }()
 
-let cacheRead: Cacher<Data>.CacheRead = {
+let cacheRead: Cacher<CurrencyModel>.CacheRead = {
     Future { promise in
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let data = try Data(contentsOf: kCacheURL)
-                let decode = try PropertyListDecoder().decode(Cacher<Data>.Cache.self, from: data)
+                let decode = try PropertyListDecoder().decode(Cacher<CurrencyModel>.Cache.self, from: data)
                 DispatchQueue.main.async {
                     promise(.success(decode))
                 }
@@ -52,7 +52,7 @@ let cacheRead: Cacher<Data>.CacheRead = {
     }
 }
 
-let cacheWrite: Cacher<Data>.CacheWrite = { cache in
+let cacheWrite: Cacher<CurrencyModel>.CacheWrite = { cache in
     Future { promise in
         DispatchQueue.global(qos: .userInitiated).async {
             do {

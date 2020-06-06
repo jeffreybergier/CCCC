@@ -33,7 +33,9 @@ struct CurrencyEntry: View {
     var body: some View {
         HStack {
             Text("🇺🇸").font(.largeTitle)
-            TextField("Enter USD Amount", text: $entry).font(.title)
+            TextField("Enter USD Amount", text: $entry)
+                .keyboardType(.decimalPad)
+                .font(.title)
             Button(action: { self.entry = "" }, label: { Text("✖️") })
         }
     }

@@ -30,38 +30,71 @@ import SwiftUI
 
 struct CurrencyTable: View {
     let data: [CurrencyModel.Quote]
-    let currencyFromAmount: String
-    var doubleValue: Double? {
-        Double(self.currencyFromAmount.trimmingCharacters(in: .whitespacesAndNewlines))
+    let userInput: String
+    private var inputDoubleValue: Double? {
+        Double(self.userInput.trimmingCharacters(in: .whitespacesAndNewlines))
     }
-    let formatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.numberStyle = .currency
-        f.currencySymbol = ""
-        return f
-    }()
     var body: some View {
-        if let doubleValue = self.doubleValue {
-            return AnyView(List(self.data) { quote in
-                HStack {
-                    Text(quote.toFlag).font(.largeTitle)
-                    Text(self.formatter.string(from: .init(value: doubleValue * quote.value))!)
-                    Text(quote.to).font(.headline)
-                    Spacer()
-                    Text(String(quote.value)).font(.subheadline)
-                }
-            })
-        } else {
-            return AnyView(List(self.data) { quote in
-                HStack {
-                    Text(quote.toFlag).font(.largeTitle)
-                    Text(quote.to).font(.headline)
-                    Spacer()
-                    Text(String(quote.value)).font(.subheadline)
-                }
-            })
+        List(self.data) { quote in
+            ViewSwitch(quote: quote, price: self.inputDoubleValue)
         }
+    }
+}
 
+fileprivate struct ViewSwitch: View {
+    let quote: CurrencyModel.Quote
+    let price: Double?
+    private func priceString(to: Double, from: Double) -> String {
+        formatter.string(from: .init(value: to * from))!
+    }
+    private func rateString(_ rate: Double) -> String {
+        "1:" + formatter.string(from: .init(value: rate))!
+    }
+    var body: some View {
+        if let price = self.price {
+            return AnyView(
+                WithPriceCell(flag: quote.toFlag,
+                              code: quote.to,
+                              price: self.priceString(to: price, from: quote.value),
+                              rate: self.rateString(quote.value))
+            )
+        } else {
+            return AnyView(
+                WithOutPriceCell(flag: quote.toFlag,
+                                 code: quote.to,
+                                 rate: self.rateString(quote.value))
+            )
+        }
+    }
+}
+
+fileprivate struct WithPriceCell: View {
+    let flag: String
+    let code: String
+    let price: String
+    let rate: String
+    var body: some View {
+        HStack(alignment: .lastTextBaseline) {
+            Text(self.flag).font(.largeTitle)
+            Text(self.price).font(Font.title.monospacedDigit())
+            Text(self.code).font(.headline)
+            Spacer()
+            Text(self.rate).font(Font.subheadline.monospacedDigit())
+        }
+    }
+}
+
+fileprivate struct WithOutPriceCell: View {
+    let flag: String
+    let code: String
+    let rate: String
+    var body: some View {
+        HStack(alignment: .lastTextBaseline) {
+            Text(self.flag).font(.largeTitle)
+            Text(self.code).font(.title)
+            Spacer()
+            Text(self.rate).font(Font.subheadline.monospacedDigit())
+        }
     }
 }
 
@@ -71,9 +104,33 @@ extension CurrencyModel.Quote: Identifiable {
     }
 }
 
-struct CurrencyTable_Previews: PreviewProvider {
+struct CurrencyTable_Preview1: PreviewProvider {
     static var previews: some View {
         let data: [CurrencyModel.Quote] = TESTING_model.quotes
-        return CurrencyTable(data: data, currencyFromAmount: "10.0")
+        return CurrencyTable(data: data, userInput: "10.0")
     }
 }
+
+struct CurrencyTable_Preview2: PreviewProvider {
+    static var previews: some View {
+        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        return CurrencyTable(data: data, userInput: "笑う")
+    }
+}
+
+struct CurrencyTable_Preview3: PreviewProvider {
+    static var previews: some View {
+        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        return CurrencyTable(data: data, userInput: "1000000000.0")
+    }
+}
+
+// Number formatters are expensive to create
+// or change, so I'm keeping this one as a
+// fileprivate constant for performance.
+fileprivate let formatter: NumberFormatter = {
+    let f = NumberFormatter()
+    f.numberStyle = .currency
+    f.currencySymbol = ""
+    return f
+}()

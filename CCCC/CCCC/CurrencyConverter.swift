@@ -37,7 +37,7 @@ struct CurrencyConverter: View {
         NavigationView {
             VStack {
                 CurrencyEntry(entry: $currencyInput).padding()
-                ViewSwitch(value: $dataSource.model)
+                ViewSwitch(value: $dataSource.model, currencyFromAmount: $currencyInput)
             }
             .navigationBarTitle("Ｃ四つ", displayMode: .inline)
         }
@@ -50,8 +50,12 @@ struct CurrencyConverter_Previews: PreviewProvider {
     }
 }
 
+// Switch statements are not allowed in ViewBuilders
+// This simple ViewSwitch helps me change the view based
+// on the state of the mdoel
 struct ViewSwitch: View {
     @Binding var value: CurrencyDataSource.Base.Value
+    @Binding var currencyFromAmount: String
     var body: some View {
         switch value {
         case .initialLoad:
@@ -61,7 +65,8 @@ struct ViewSwitch: View {
                 Spacer()
             })
         case .newValue(let model):
-            return AnyView(CurrencyTable(data: model.quotes))
+            return AnyView(CurrencyTable(data: model.quotes,
+                                         currencyFromAmount: currencyFromAmount))
         case .error:
             return AnyView(VStack{
                 Spacer()

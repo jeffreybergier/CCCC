@@ -64,7 +64,7 @@ class ModelTests: XCTestCase {
     }
     
     private func modelFromFakeData() -> CurrencyModel? {
-        guard let data = TEST_networkResponse.data(using: .utf8) else { XCTFail(); return nil; }
+        guard let data = TESTING_networkResponse.data(using: .utf8) else { XCTFail(); return nil; }
         do {
             return try JSONDecoder().decode(CurrencyModel.self, from: data)
         } catch {

@@ -88,12 +88,6 @@ struct CurrencyModel: Codable, Hashable {
     }
 }
 
-extension CurrencyModel.Quote: Identifiable {
-    var id: String {
-        _key
-    }
-}
-
 extension CurrencyModel {
     private enum CodingKeys: String, CodingKey {
         case _quotes = "quotes", terms, privacy, source
@@ -110,7 +104,7 @@ struct QuoteWrapper: Codable, Hashable {
     }
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        let dictionary = Dictionary<String, Double>(uniqueKeysWithValues: self.values.map { ($0._key, $0.value) })
+        let dictionary = Dictionary(uniqueKeysWithValues: self.values.map { ($0._key, $0.value) })
         try container.encode(dictionary)
     }
 }

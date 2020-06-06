@@ -30,27 +30,50 @@ import SwiftUI
 
 struct CurrencyTable: View {
     let data: [CurrencyModel.Quote]
+    let currencyFromAmount: String
+    var doubleValue: Double? {
+        Double(self.currencyFromAmount.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+    let formatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.numberStyle = .currency
+        f.currencySymbol = ""
+        return f
+    }()
     var body: some View {
-        List(self.data) { quote in
-            HStack {
-                Text(quote.toFlag).font(.largeTitle)
-                Text(quote.to).font(.headline)
-                Spacer()
-                Text(String(quote.value)).font(.subheadline)
-            }
+        if let doubleValue = self.doubleValue {
+            return AnyView(List(self.data) { quote in
+                HStack {
+                    Text(quote.toFlag).font(.largeTitle)
+                    Text(self.formatter.string(from: .init(value: doubleValue * quote.value))!)
+                    Text(quote.to).font(.headline)
+                    Spacer()
+                    Text(String(quote.value)).font(.subheadline)
+                }
+            })
+        } else {
+            return AnyView(List(self.data) { quote in
+                HStack {
+                    Text(quote.toFlag).font(.largeTitle)
+                    Text(quote.to).font(.headline)
+                    Spacer()
+                    Text(String(quote.value)).font(.subheadline)
+                }
+            })
         }
+
+    }
+}
+
+extension CurrencyModel.Quote: Identifiable {
+    var id: String {
+        _key
     }
 }
 
 struct CurrencyTable_Previews: PreviewProvider {
     static var previews: some View {
-        let data: [CurrencyModel.Quote] = [
-            try! .init(key: "USDUSD", value: 1.0),
-            try! .init(key: "USDJPY", value: 1.254),
-            try! .init(key: "USDCAD", value: 1.56),
-            try! .init(key: "USDEUR", value: 1.323),
-            try! .init(key: "USDGBP", value: 1.877),
-        ]
-        return CurrencyTable(data: data)
+        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        return CurrencyTable(data: data, currencyFromAmount: "10.0")
     }
 }

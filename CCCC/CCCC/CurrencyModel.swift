@@ -57,5 +57,225 @@ struct CurrencyModel: Codable, Hashable {
     var terms: URL
     var privacy: URL
     var source: String
-    var quotes: [String: Double]
+    var _quotes: QuoteWrapper
+    var quotes: [Quote] {
+        _quotes.values
+    }
+    
+    struct Quote: Hashable {
+        var value: Double
+        var from: String
+        var to: String
+        var fromFlag: String {
+            flagMap[self.from] ?? "🏳️"
+        }
+        var toFlag: String {
+            flagMap[self.to] ?? "🏳️"
+        }
+        
+        var _key: String
+        
+        init(key: String, value: Double) throws {
+            guard key.count == 6 else { throw NSError.generic() }
+            
+            self._key = key
+            self.value = value
+            
+            let middleIndex = key.index(key.startIndex, offsetBy: 3)
+            self.from = String(key[key.startIndex..<middleIndex])
+            self.to = String(key[middleIndex..<key.endIndex])
+            print(self.to)
+        }
+    }
 }
+extension CurrencyModel {
+    private enum CodingKeys: String, CodingKey {
+        case _quotes = "quotes", terms, privacy, source
+    }
+}
+
+struct QuoteWrapper: Codable, Hashable {
+    var values: [CurrencyModel.Quote]
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let dictionary = try container.decode([String: Double].self)
+        self.values = try dictionary.compactMap { try .init(key: $0.key, value: $0.value) }
+                                    .sorted(by: { $0._key < $1._key })
+    }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        let dictionary = Dictionary<String, Double>(uniqueKeysWithValues: self.values.map { ($0._key, $0.value) })
+        try container.encode(dictionary)
+    }
+}
+
+fileprivate let flagMap: [String: String] = [
+    "FJD": "🇫🇯",
+    "TWD": "🇹🇼",
+    "SLL": "🇸🇱",
+    "CDF": "🇨🇩",
+    "MKD": "🇲🇰",
+    "KMF": "🇰🇲",
+    "RSD": "🇷🇸",
+    "FKP": "🇫🇰",
+    "KPW": "🇰🇵",
+    "BYN": "🇧🇾",
+    "KGS": "🇰🇬",
+    "VND": "🇻🇳",
+    "IMP": "🇮🇲",
+    "SDG": "🇸🇩",
+    "SZL": "🇸🇿",
+    "MDL": "🇲🇩",
+    "TRY": "🇹🇷",
+    "SRD": "🇸🇷",
+    "LBP": "🇱🇧",
+    "HUF": "🇭🇺",
+    // "XDR": "",
+    "GMD": "🇬🇲",
+    "CUC": "🇨🇺",
+    "MRO": "🇲🇷",
+    "SVC": "🇸🇻",
+    //"GIP": "",
+    //"ZMW": "",
+    //"SCR": "",
+    //"LVL": "",
+    //"BMD": "",
+    //"GGP": "",
+    //"JOD": "",
+    //"YER": "",
+    //"XOF": "",
+    //"ALL": "",
+    //"RON": "",
+    //"ZMK": "",
+    //"HNL": "",
+    //"GNF": "",
+    //"BOB": "",
+    //"MZN": "",
+    //"PKR": "",
+    //"AOA": "",
+    //"WST": "",
+    //"LRD": "",
+    //"QAR": "",
+    //"MMK": "",
+    //"NAD": "",
+    //"AED": "",
+    //"MGA": "",
+    //"XAG": "",
+    //"CZK": "",
+    //"NGN": "",
+    //"SAR": "",
+    //"SOS": "",
+    //"DOP": "",
+    //"LKR": "",
+    //"HRK": "",
+    //"ANG": "",
+    //"AFN": "",
+    "JPY": "🇯🇵",
+    //"DZD": "",
+    //"KZT": "",
+    //"AZN": "",
+    //"PGK": "",
+    //"HKD": "",
+    //"BHD": "",
+    //"GTQ": "",
+    //"UAH": "",
+    //"OMR": "",
+    //"PHP": "",
+    //"MYR": "",
+    //"TND": "",
+    //"BZD": "",
+    //"HTG": "",
+    //"RWF": "",
+    //"JMD": "",
+    //"STD": "",
+    //"PYG": "",
+    //"IRR": "",
+    //"MVR": "",
+    //"KWD": "",
+    //"BAM": "",
+    //"DJF": "",
+    //"COP": "",
+    "DKK": "🇩🇰",
+    "EUR": "🇪🇺",
+    //"PLN": "",
+    //"VEF": "",
+    //"ZAR": "",
+    //"INR": "",
+    //"UGX": "",
+    //"CHF": "",
+    //"MNT": "",
+    //"XAU": "",
+    //"MWK": "",
+    //"UZS": "",
+    //"BND": "",
+    //"EGP": "",
+    //"CVE": "",
+    "MXN": "🇲🇽",
+    //"LAK": "",
+    //"ISK": "",
+    //"BWP": "",
+    //"XAF": "",
+    //"PEN": "",
+    //"CLF": "",
+    //"ARS": "",
+    //"LYD": "",
+    //"RUB": "",
+    //"BDT": "",
+    //"TTD": "",
+    //"TMT": "",
+    //"JEP": "",
+    "AUD": "🇦🇺",
+    //"BTC": "",
+    //"NIO": "",
+    //"KES": "",
+    //"SEK": "",
+    //"GHS": "",
+    "GBP": "🇬🇧",
+    //"VUV": "",
+    //"SBD": "",
+    //"XPF": "",
+    //"MAD": "",
+    //"XCD": "",
+    "NZD": "🇳🇿",
+    //"BRL": "",
+    //"CUP": "",
+    //"GEL": "",
+    //"ILS": "",
+    //"NOK": "",
+    //"BTN": "",
+    //"CRC": "",
+    //"CNY": "",
+    "CAD": "🇨🇦",
+    //"AWG": "",
+    //"SHP": "",
+    //"MOP": "",
+    //"NPR": "",
+    //"ZWL": "",
+    //"LSL": "",
+    //"BYR": "",
+    //"PAB": "",
+    //"BBD": "",
+    //"CLP": "",
+    //"AMD": "",
+    //"LTL": "",
+    //"KHR": "",
+    //"GYD": "",
+    //"UYU": "",
+    //"BIF": "",
+    //"TJS": "",
+    //"KYD": "",
+    //"ERN": "",
+    "SGD": "🇸🇬",
+    //"IDR": "",
+    "THB": "🇹🇭",
+    //"TOP": "",
+    //"BGN": "",
+    //"IQD": "",
+    //"SYP": "",
+    //"BSD": "",
+    //"MUR": "",
+    //"KRW": "",
+    //"TZS": "",
+    "USD": "🇺🇸",
+//    "ETB": "",
+]

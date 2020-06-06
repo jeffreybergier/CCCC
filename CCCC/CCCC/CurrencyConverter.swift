@@ -28,14 +28,19 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct CurrencyConverter: View {
+    
+    @State var currencyInput = ""
+    
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            CurrencyEntry(entry: currencyInput)
+        }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct CurrencyConverter_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        CurrencyConverter()
     }
 }

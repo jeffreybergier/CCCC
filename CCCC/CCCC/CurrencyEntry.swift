@@ -28,7 +28,7 @@
 
 import SwiftUI
 
-struct PriceEntry: View {
+struct CurrencyEntry: View {
     @State var entry = ""
     var body: some View {
         HStack {
@@ -39,8 +39,8 @@ struct PriceEntry: View {
     }
 }
 
-struct PriceEntry_Previews: PreviewProvider {
+struct CurrencyEntry_Previews: PreviewProvider {
     static var previews: some View {
-        PriceEntry()
+        CurrencyEntry()
     }
 }

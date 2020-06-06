@@ -88,6 +88,13 @@ struct CurrencyModel: Codable, Hashable {
         }
     }
 }
+
+extension CurrencyModel.Quote: Identifiable {
+    var id: String {
+        _key
+    }
+}
+
 extension CurrencyModel {
     private enum CodingKeys: String, CodingKey {
         case _quotes = "quotes", terms, privacy, source

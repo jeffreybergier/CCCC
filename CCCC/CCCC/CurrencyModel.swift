@@ -84,7 +84,6 @@ struct CurrencyModel: Codable, Hashable {
             let middleIndex = key.index(key.startIndex, offsetBy: 3)
             self.from = String(key[key.startIndex..<middleIndex])
             self.to = String(key[middleIndex..<key.endIndex])
-            print(self.to)
         }
     }
 }

@@ -29,7 +29,7 @@
 import SwiftUI
 
 struct CurrencyEntry: View {
-    @State var entry = ""
+    @Binding var entry: String
     var body: some View {
         HStack {
             Text("🇺🇸").font(.largeTitle)
@@ -40,7 +40,8 @@ struct CurrencyEntry: View {
 }
 
 struct CurrencyEntry_Previews: PreviewProvider {
+    @State static var data = ""
     static var previews: some View {
-        CurrencyEntry()
+        CurrencyEntry(entry: $data)
     }
 }

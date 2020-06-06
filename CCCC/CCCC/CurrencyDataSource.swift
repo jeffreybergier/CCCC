@@ -1,5 +1,5 @@
 //
-//  CurrencyModelPublisher.swift
+//  CurrencyDataSource.swift
 //  CCCC
 //
 //  Created by Jeffrey Bergier on 2020/06/06.
@@ -28,6 +28,24 @@
 
 import Combine
 
-class CurrencyModelPublisher: ObservableObject {
-    @Published var model = 0
+class CurrencyDataSource: ObservableObject {
+    
+    typealias Base = Cacher<CurrencyModel>
+    
+    @Published var model: Base.Value = .initialLoad
+    private let cacher: Base
+    
+    init() {
+        self.cacher = Cacher<CurrencyModel>(originalLoad: networkLoad,
+                                           cacheRead: cacheRead,
+                                           cacheWrite: cacheWrite,
+                                           expiresIn: 60*60*24)
+        self.token = self.cacher.observe.assign(to: \.model, on: self)
+    }
+    
+    private var token: AnyCancellable?
+    
+    deinit {
+        self.token?.cancel()
+    }
 }

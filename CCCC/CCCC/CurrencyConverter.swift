@@ -30,18 +30,33 @@ import SwiftUI
 
 struct CurrencyConverter: View {
     
-    @ObservedObject var currencies = CurrencyModelPublisher()
+    @ObservedObject var dataSource: CurrencyDataSource
     @State var currencyInput = ""
     
     var body: some View {
         VStack {
-            CurrencyEntry(entry: currencyInput)
+            CurrencyEntry(entry: $currencyInput)
+            ViewSwitch(value: $dataSource.model)
         }
     }
 }
 
-struct CurrencyConverter_Previews: PreviewProvider {
-    static var previews: some View {
-        CurrencyConverter()
+//struct CurrencyConverter_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CurrencyConverter()
+//    }
+//}
+
+struct ViewSwitch: View {
+    @Binding var value: CurrencyDataSource.Base.Value
+    var body: some View {
+        switch value {
+        case .initialLoad:
+            return AnyView(Text("Loading…"))
+        case .newValue(let model):
+            return AnyView(CurrencyTable(data: model.quotes))
+        case .error:
+            return AnyView(Text("Network Error Ocurred"))
+        }
     }
 }

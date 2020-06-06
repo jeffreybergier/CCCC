@@ -29,7 +29,7 @@
 import SwiftUI
 
 struct CurrencyTable: View {
-    @State var data: [CurrencyModel.Quote]
+    let data: [CurrencyModel.Quote]
     var body: some View {
         List(self.data) { quote in
             HStack {

@@ -32,10 +32,11 @@ import SwiftUI
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    private let dataSource = CurrencyDataSource()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-        let contentView = CurrencyConverter()
+        let contentView = CurrencyConverter(dataSource: self.dataSource)
 
         // Use a UIHostingController as window root view controller.
         let windowScene = scene as! UIWindowScene
@@ -47,8 +48,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 
-struct SceneDelegate_Previews: PreviewProvider {
-    static var previews: some View {
-        CurrencyConverter()
-    }
-}
+//struct SceneDelegate_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CurrencyConverter()
+//    }
+//}

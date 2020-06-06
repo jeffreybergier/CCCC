@@ -34,10 +34,9 @@ private let kAPIKey: String = {
 }()
 
 private let kAPIURL: URL = {
-    var c = URLComponents(string: "http://www.api.currencylayer.com/live")!
+    var c = URLComponents(string: "http://api.currencylayer.com/live")!
     c.queryItems = [
-        .init(name: "access_key", value: kAPIKey),
-        .init(name: "source", value: "JPY")
+        .init(name: "access_key", value: kAPIKey)
     ]
     return c.url!
 }()
@@ -66,6 +65,7 @@ let networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
                 }
             }
         }
+        task.resume()
     }
 }
 

@@ -10,6 +10,7 @@
 		486E8FEC248B7BF600095128 /* NetworkLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FEB248B7BF600095128 /* NetworkLoad.swift */; };
 		486E8FEE248B806500095128 /* CacheReadWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FED248B806500095128 /* CacheReadWrite.swift */; };
 		486E8FF0248B84EE00095128 /* CurrencyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FEF248B84EE00095128 /* CurrencyModel.swift */; };
+		486E8FF2248B868C00095128 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF1248B868C00095128 /* ModelTests.swift */; };
 		48AFA35A248A2BA5002CAFDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA359248A2BA5002CAFDC /* AppDelegate.swift */; };
 		48AFA35C248A2BA5002CAFDC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA35B248A2BA5002CAFDC /* SceneDelegate.swift */; };
 		48AFA35E248A2BA5002CAFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA35D248A2BA5002CAFDC /* ContentView.swift */; };
@@ -35,6 +36,7 @@
 		486E8FEB248B7BF600095128 /* NetworkLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLoad.swift; sourceTree = "<group>"; };
 		486E8FED248B806500095128 /* CacheReadWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheReadWrite.swift; sourceTree = "<group>"; };
 		486E8FEF248B84EE00095128 /* CurrencyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyModel.swift; sourceTree = "<group>"; };
+		486E8FF1248B868C00095128 /* ModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
 		48AFA356248A2BA5002CAFDC /* CCCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48AFA359248A2BA5002CAFDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		48AFA35B248A2BA5002CAFDC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				48AFA370248A2BA7002CAFDC /* CacherTests.swift */,
+				486E8FF1248B868C00095128 /* ModelTests.swift */,
 				48AFA372248A2BA7002CAFDC /* Info.plist */,
 			);
 			path = CCCCTests;
@@ -239,6 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48AFA371248A2BA7002CAFDC /* CacherTests.swift in Sources */,
+				486E8FF2248B868C00095128 /* ModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

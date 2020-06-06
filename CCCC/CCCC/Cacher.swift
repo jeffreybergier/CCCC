@@ -29,9 +29,9 @@
 import Combine
 import Foundation
 
-class Cacher<T: Codable> {
+class Cacher<T: Codable & Hashable> {
     
-    struct Cache: Codable {
+    struct Cache: Codable, Hashable {
         var expirationDate: Date
         var payload: T
     }

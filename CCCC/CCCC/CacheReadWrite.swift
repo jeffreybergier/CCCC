@@ -69,3 +69,7 @@ let cacheWrite: Cacher<CurrencyModel>.CacheWrite = { cache in
         }
     }
 }
+
+func TESTING_ONLY_deleteCache() throws {
+    try FileManager.default.removeItem(at: kCacheURL)
+}

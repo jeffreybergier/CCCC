@@ -44,25 +44,24 @@ private let kAPIURL: URL = {
 let networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
     Future { promise in
         let task = URLSession.shared.dataTask(with: kAPIURL) { (data, response, error) in
-            DispatchQueue.main.async {
-                guard response?.isValid == true else {
-                    promise(.failure(error ?? NSError.generic()))
-                    return
-                }
-                if let error = error {
-                    promise(.failure(error))
-                    return
-                }
-                guard let data = data else {
-                    promise(.failure(NSError.generic()))
-                    return
-                }
-                do {
-                    let model = try JSONDecoder().decode(CurrencyModel.self, from: data)
-                    promise(.success(model))
-                } catch {
-                    promise(.failure(error))
-                }
+            let q = DispatchQueue.main
+            guard response?.isValid == true else {
+                q.async { promise(.failure(error ?? NSError.generic())) }
+                return
+            }
+            if let error = error {
+                q.async { promise(.failure(error)) }
+                return
+            }
+            guard let data = data else {
+                q.async { promise(.failure(NSError.generic())) }
+                return
+            }
+            do {
+                let model = try JSONDecoder().decode(CurrencyModel.self, from: data)
+                q.async { promise(.success(model)) }
+            } catch {
+                q.async { promise(.failure(error)) }
             }
         }
         task.resume()

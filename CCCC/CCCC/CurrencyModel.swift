@@ -53,7 +53,7 @@ import Foundation
  }
  */
 
-struct CurrencyModel: Codable {
+struct CurrencyModel: Codable, Hashable {
     var terms: URL
     var privacy: URL
     var source: String

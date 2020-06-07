@@ -63,14 +63,10 @@ struct CurrencyModel: Codable, Hashable {
     }
     
     struct Quote: Hashable {
-        var value: Double
-        var from: String
-        var to: String
-        var fromFlag: String {
-            flagMap[self.from] ?? "🏳️"
-        }
-        var toFlag: String {
-            flagMap[self.to] ?? "🏳️"
+        var rate: Double
+        var code: String
+        var flag: String {
+            flagMap[self.code] ?? "🏳️"
         }
         
         var _key: String
@@ -79,11 +75,10 @@ struct CurrencyModel: Codable, Hashable {
             guard key.count == 6 else { throw NSError.generic() }
             
             self._key = key
-            self.value = value
+            self.rate = value
             
             let middleIndex = key.index(key.startIndex, offsetBy: 3)
-            self.from = String(key[key.startIndex..<middleIndex])
-            self.to = String(key[middleIndex..<key.endIndex])
+            self.code = String(key[middleIndex..<key.endIndex])
         }
     }
 }
@@ -104,7 +99,7 @@ struct QuoteWrapper: Codable, Hashable {
     }
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        let dictionary = Dictionary(uniqueKeysWithValues: self.values.map { ($0._key, $0.value) })
+        let dictionary = Dictionary(uniqueKeysWithValues: self.values.map { ($0._key, $0.rate) })
         try container.encode(dictionary)
     }
 }

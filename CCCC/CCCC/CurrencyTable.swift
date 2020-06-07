@@ -34,7 +34,7 @@ struct CurrencyTable: View {
     var body: some View {
         List(self.quotes) { quote in
             ViewSwitch(quote: quote,
-                       amount: self.viewModel.formattedPrice(withRate: quote.value))
+                       amount: self.viewModel.formattedPrice(withRate: quote.rate))
         }
     }
 }
@@ -48,16 +48,16 @@ fileprivate struct ViewSwitch: View {
     var body: some View {
         if let amount = self.amount {
             return AnyView(
-                WithPriceCell(flag: quote.toFlag,
-                              code: quote.to,
+                WithPriceCell(flag: quote.flag,
+                              code: quote.code,
                               amount: amount,
-                              rate: formattedRate(quote.value))
+                              rate: formattedRate(quote.rate))
             )
         } else {
             return AnyView(
-                WithOutPriceCell(flag: quote.toFlag,
-                                 code: quote.to,
-                                 rate: formattedRate(quote.value))
+                WithOutPriceCell(flag: quote.flag,
+                                 code: quote.code,
+                                 rate: formattedRate(quote.rate))
             )
         }
     }

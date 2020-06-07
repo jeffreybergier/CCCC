@@ -70,11 +70,16 @@ fileprivate struct WithPriceCell: View {
     let rate: String
     var body: some View {
         HStack(alignment: .lastTextBaseline) {
-            Text(self.flag).font(.largeTitle)
-            Text(self.amount).font(Font.title.monospacedDigit())
-            Text(self.code).font(.headline)
+            Text(self.flag)
+                .font(.largeTitle)
+            Text(self.amount)
+                .lineLimit(1)
+                .font(Font.title.monospacedDigit())
+            Text(self.code)
+                .font(.headline)
             Spacer()
-            Text(self.rate).font(Font.subheadline.monospacedDigit())
+            Text(self.rate)
+                .font(Font.subheadline.monospacedDigit())
         }
     }
 }
@@ -85,10 +90,13 @@ fileprivate struct WithOutPriceCell: View {
     let rate: String
     var body: some View {
         HStack(alignment: .lastTextBaseline) {
-            Text(self.flag).font(.largeTitle)
-            Text(self.code).font(.title)
+            Text(self.flag)
+                .font(.largeTitle)
+            Text(self.code)
+                .font(.title)
             Spacer()
-            Text(self.rate).font(Font.subheadline.monospacedDigit())
+            Text(self.rate)
+                .font(Font.subheadline.monospacedDigit())
         }
     }
 }
@@ -107,6 +115,7 @@ fileprivate func formattedRate(_ rate: Double) -> String {
     "1:" + formatter.string(from: .init(value: rate))!
 }
 
+// Required for List
 extension CurrencyModel.Quote: Identifiable {
     var id: String {
         _key

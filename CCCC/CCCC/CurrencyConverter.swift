@@ -35,9 +35,12 @@ struct CurrencyConverter: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                CurrencyEntry(viewModel: self.viewModel).padding()
-                ViewSwitch(value: self.dataSource.model, viewModel: self.viewModel)
+            VStack(spacing: 0) {
+                CurrencyEntry(viewModel: self.viewModel)
+                    .padding()
+                Divider()
+                ViewSwitch(value: self.dataSource.model,
+                           viewModel: self.viewModel)
             }
             .navigationBarTitle("Ｃ四つ", displayMode: .inline)
         }

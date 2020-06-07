@@ -53,7 +53,8 @@ class Cacher<T: Codable & Hashable> {
     private let expiresIn: TimeInterval
     
     // Observer
-    private let _observe: CurrentValueSubject<Value, Never> = .init(.initialLoad)
+    // Error type of Never because Publisher runs on a timer, so it never
+    // ends. Instead, any errors are passed through the `Value` type
     private(set) lazy var observe: AnyPublisher<Value, Never> = {
         return _observe.handleEvents(receiveSubscription: { [weak self] _ in
             // Dispatch Async so the subscription finishes before calling `update`
@@ -65,6 +66,7 @@ class Cacher<T: Codable & Hashable> {
         })
         .eraseToAnyPublisher()
     }()
+    private let _observe: CurrentValueSubject<Value, Never> = .init(.initialLoad)
     
     init(originalLoad: @escaping OriginalLoad,
          cacheRead: @escaping CacheRead,
@@ -90,40 +92,30 @@ class Cacher<T: Codable & Hashable> {
             // if this is first load we also want to send the ".initialLoading" state
             self._observe.send(.initialLoad)
         }
-        self.token =
-            // 1) Try to load from the cache
-            self.cacheRead()
-            // 2) If the cache is expired throw an error down the stream
-            .tryMap { cache -> Cache in
+
+
+
+        self.token = self.cacheRead()                             // 1) Try to load from the cache
+            .tryMap { cache in
                 guard cache.expirationDate.timeIntervalSince(Date()) > 0
-                    else { throw NSError.generic() }
-                return cache
-            // 3) Catch any cache errors and convert them
-            //    into a network request
-            }.catch { [expiresIn, originalLoad] _ in
-                // 4) Convert the network request into something cachable
-                return originalLoad().map {
-                    Cache(
-                        expirationDate: Date() + expiresIn,
-                        payload: $0
-                    )
-                }
-            // 5) Cache the network request to disk
-            //    This has the side effect of also caching
-            //    the original cache to the disk again
-            //    later we could find a way to take that out if needed
-            }.flatMap { [cacheWrite] cache in
-                cacheWrite(cache).map { cache }
-            }.map { $0.payload }
-            // 6) Get the final values out and send them through our publisher
-            .sink(receiveCompletion: { [weak self] in
-                guard case .failure(let error) = $0 else { return }
-                self?._observe.send(.error(error))
-                self?.invalidate()
-            }, receiveValue: { [weak self] in
-                self?._observe.send(.newValue($0))
-                self?.invalidate()
-            })
+                    else { throw NSError.generic() }              // 2) If the cache is expired throw an error down the stream.
+                return cache.payload                              //    If there is no error, pass the payload down the stream.
+            }
+            .catch { [originalLoad] _ in return originalLoad() }  // 3) If cache error, perform `originalLoad`
+            .map { [expiresIn] in
+                Cache(expirationDate: Date() + expiresIn,         // 4) Map new payload for caching
+                      payload: $0)
+            }
+            .flatMap { [cacheWrite] cache in cacheWrite(cache)    // 5) Save new cache to disk
+                .map { cache.payload } }                          // 6) Map so final payload can be observed
+            .sink(receiveCompletion: { [weak self] in             // 7) Send the final payload through `observe` publisher
+                    guard case .failure(let error) = $0 else { return }
+                    self?._observe.send(.error(error))
+                    self?.invalidate()
+                }, receiveValue: { [weak self] in
+                    self?._observe.send(.newValue($0))
+                    self?.invalidate()
+                })
     }
     
     private func invalidate() {

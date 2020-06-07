@@ -31,13 +31,13 @@ import SwiftUI
 struct CurrencyConverter: View {
     
     @ObservedObject var dataSource: AbstractCurrencyDataSource
-    @State var userInput = ""
+    @ObservedObject var viewModel = CurrencyEntry.ViewModel()
     
     var body: some View {
         NavigationView {
             VStack {
-                CurrencyEntry(entry: $userInput).padding()
-                ViewSwitch(value: $dataSource.model, userInput: $userInput)
+                CurrencyEntry(viewModel: self.viewModel).padding()
+                ViewSwitch(value: self.dataSource.model, viewModel: self.viewModel)
             }
             .navigationBarTitle("Ｃ四つ", displayMode: .inline)
         }
@@ -54,8 +54,8 @@ struct CurrencyConverter_Previews: PreviewProvider {
 // This simple ViewSwitch helps me change the view based
 // on the state of the mdoel
 fileprivate struct ViewSwitch: View {
-    @Binding var value: CurrencyDataSource.Base.Value
-    @Binding var userInput: String
+    let value: CurrencyDataSource.Base.Value
+    let viewModel: CurrencyEntry.ViewModel
     var body: some View {
         switch value {
         case .initialLoad:
@@ -65,8 +65,10 @@ fileprivate struct ViewSwitch: View {
                 Spacer()
             })
         case .newValue(let model):
-            return AnyView(CurrencyTable(data: model.quotes,
-                                         userInput: userInput))
+            return AnyView(
+                CurrencyTable(quotes: model.quotes,
+                              viewModel: self.viewModel)
+            )
         case .error:
             return AnyView(VStack{
                 Spacer()

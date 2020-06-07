@@ -29,40 +29,35 @@
 import SwiftUI
 
 struct CurrencyTable: View {
-    let data: [CurrencyModel.Quote]
-    let userInput: String
-    private var inputDoubleValue: Double? {
-        Double(self.userInput.trimmingCharacters(in: .whitespacesAndNewlines))
-    }
+    let quotes: [CurrencyModel.Quote]
+    @ObservedObject var viewModel: CurrencyEntry.ViewModel
     var body: some View {
-        List(self.data) { quote in
-            ViewSwitch(quote: quote, price: self.inputDoubleValue)
+        List(self.quotes) { quote in
+            ViewSwitch(quote: quote,
+                       amount: self.viewModel.formattedPrice(withRate: quote.value))
         }
     }
 }
 
+// Switch statements are not allowed in ViewBuilders
+// This simple ViewSwitch helps me change the view based
+// on the state of the mdoel
 fileprivate struct ViewSwitch: View {
     let quote: CurrencyModel.Quote
-    let price: Double?
-    private func priceString(to: Double, from: Double) -> String {
-        formatter.string(from: .init(value: to * from))!
-    }
-    private func rateString(_ rate: Double) -> String {
-        "1:" + formatter.string(from: .init(value: rate))!
-    }
+    let amount: String?
     var body: some View {
-        if let price = self.price {
+        if let amount = self.amount {
             return AnyView(
                 WithPriceCell(flag: quote.toFlag,
                               code: quote.to,
-                              price: self.priceString(to: price, from: quote.value),
-                              rate: self.rateString(quote.value))
+                              amount: amount,
+                              rate: formattedRate(quote.value))
             )
         } else {
             return AnyView(
                 WithOutPriceCell(flag: quote.toFlag,
                                  code: quote.to,
-                                 rate: self.rateString(quote.value))
+                                 rate: formattedRate(quote.value))
             )
         }
     }
@@ -71,12 +66,12 @@ fileprivate struct ViewSwitch: View {
 fileprivate struct WithPriceCell: View {
     let flag: String
     let code: String
-    let price: String
+    let amount: String
     let rate: String
     var body: some View {
         HStack(alignment: .lastTextBaseline) {
             Text(self.flag).font(.largeTitle)
-            Text(self.price).font(Font.title.monospacedDigit())
+            Text(self.amount).font(Font.title.monospacedDigit())
             Text(self.code).font(.headline)
             Spacer()
             Text(self.rate).font(Font.subheadline.monospacedDigit())
@@ -98,33 +93,6 @@ fileprivate struct WithOutPriceCell: View {
     }
 }
 
-extension CurrencyModel.Quote: Identifiable {
-    var id: String {
-        _key
-    }
-}
-
-struct CurrencyTable_Preview1: PreviewProvider {
-    static var previews: some View {
-        let data: [CurrencyModel.Quote] = TESTING_model.quotes
-        return CurrencyTable(data: data, userInput: "10.0")
-    }
-}
-
-struct CurrencyTable_Preview2: PreviewProvider {
-    static var previews: some View {
-        let data: [CurrencyModel.Quote] = TESTING_model.quotes
-        return CurrencyTable(data: data, userInput: "笑う")
-    }
-}
-
-struct CurrencyTable_Preview3: PreviewProvider {
-    static var previews: some View {
-        let data: [CurrencyModel.Quote] = TESTING_model.quotes
-        return CurrencyTable(data: data, userInput: "1000000000.0")
-    }
-}
-
 // Number formatters are expensive to create
 // or change, so I'm keeping this one as a
 // fileprivate constant for performance.
@@ -134,3 +102,27 @@ fileprivate let formatter: NumberFormatter = {
     f.currencySymbol = ""
     return f
 }()
+
+fileprivate func formattedRate(_ rate: Double) -> String {
+    "1:" + formatter.string(from: .init(value: rate))!
+}
+
+extension CurrencyModel.Quote: Identifiable {
+    var id: String {
+        _key
+    }
+}
+
+struct CurrencyTable_Preview1: PreviewProvider {
+    static var previews: some View {
+        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        return CurrencyTable(quotes: data, viewModel: .init(userInput: "100"))
+    }
+}
+
+struct CurrencyTable_Preview3: PreviewProvider {
+    static var previews: some View {
+        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        return CurrencyTable(quotes: data, viewModel: .init(userInput: "100000000"))
+    }
+}

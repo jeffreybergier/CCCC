@@ -29,21 +29,49 @@
 import SwiftUI
 
 struct CurrencyEntry: View {
-    @Binding var entry: String
+    @ObservedObject var viewModel: ViewModel
     var body: some View {
         HStack {
             Text("🇺🇸").font(.largeTitle)
-            TextField("Enter USD Amount", text: $entry)
+            TextField("Enter USD Amount", text: self.$viewModel.userInput)
                 .keyboardType(.decimalPad)
                 .font(.title)
-            Button(action: { self.entry = "" }, label: { Text("✖️") })
+            Button(action: { self.viewModel.userInput = "" }, label: { Text("✖️") })
         }
     }
 }
 
-struct CurrencyEntry_Previews: PreviewProvider {
-    @State static var data = ""
+extension CurrencyEntry {
+    class ViewModel: ObservableObject {
+
+        @Published var userInput: String
+
+        private let formatter: NumberFormatter = {
+            let f = NumberFormatter()
+            f.numberStyle = .currency
+            f.currencySymbol = ""
+            return f
+        }()
+
+        init(userInput: String = "") {
+            self.userInput = userInput
+        }
+
+        func formattedPrice(withRate rate: Double) -> String? {
+            guard let input = Double(self.userInput) else { return nil }
+            return self.formatter.string(from: .init(value: input * rate))
+        }
+    }
+}
+
+struct CurrencyEntry_Previews1: PreviewProvider {
     static var previews: some View {
-        CurrencyEntry(entry: $data)
+        CurrencyEntry(viewModel: .init(userInput: "100000"))
+    }
+}
+
+struct CurrencyEntry_Previews2: PreviewProvider {
+    static var previews: some View {
+        CurrencyEntry(viewModel: .init(userInput: ""))
     }
 }

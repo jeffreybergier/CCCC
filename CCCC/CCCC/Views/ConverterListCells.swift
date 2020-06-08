@@ -29,7 +29,7 @@
 import SwiftUI
 
 extension Converter.List {
-    struct WithPriceCell: View {
+    struct WithAmountCell: View {
         let flag: String
         let code: String
         let amount: String
@@ -50,7 +50,7 @@ extension Converter.List {
         }
     }
     
-    struct WithOutPriceCell: View {
+    struct WithoutAmountCell: View {
         let flag: String
         let code: String
         let rate: String
@@ -65,5 +65,23 @@ extension Converter.List {
                     .font(Font.subheadline.monospacedDigit())
             }
         }
+    }
+}
+
+struct WithAmountCell_Preview1: PreviewProvider {
+    static var previews: some View {
+        Converter.List.WithAmountCell(flag: "🇬🇧", code: "GBP", amount: "100", rate: "1:500")
+    }
+}
+
+struct WithAmountCell_Preview2: PreviewProvider {
+    static var previews: some View {
+        Converter.List.WithAmountCell(flag: "🇬🇧", code: "GBP", amount: "1000000000000000000", rate: "1:500")
+    }
+}
+
+struct WithoutAmountCell_Preview: PreviewProvider {
+    static var previews: some View {
+        Converter.List.WithoutAmountCell(flag: "🇬🇧", code: "GBP", rate: "1:500")
     }
 }

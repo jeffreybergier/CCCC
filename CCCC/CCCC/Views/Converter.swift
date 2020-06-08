@@ -64,8 +64,9 @@ extension Converter {
                 })
             case .newValue(let model):
                 return AnyView(
-                    Converter.List(quotes: model.quotes,
-                                   userInput: self.userInput)
+                    Converter // bug in swift previews requires full namespace here
+                        .List(quotes: model.quotes,
+                              userInput: self.userInput)
                 )
             case .error:
                 return AnyView(VStack{

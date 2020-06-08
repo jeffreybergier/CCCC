@@ -51,16 +51,18 @@ extension Converter.List {
         var body: some View {
             if let amount = self.amount {
                 return AnyView(
-                    WithPriceCell(flag: quote.flag,
-                                  code: quote.code,
-                                  amount: amount,
-                                  rate: formattedRate(quote.rate))
+                    Converter.List // bug in swift previews requires full namespace here
+                        .WithAmountCell(flag: quote.flag,
+                                        code: quote.code,
+                                        amount: amount,
+                                        rate: formattedRate(quote.rate))
                 )
             } else {
                 return AnyView(
-                    WithOutPriceCell(flag: quote.flag,
-                                     code: quote.code,
-                                     rate: formattedRate(quote.rate))
+                    Converter.List // bug in swift previews requires full namespace here
+                        .WithoutAmountCell(flag: quote.flag,
+                                           code: quote.code,
+                                           rate: formattedRate(quote.rate))
                 )
             }
         }

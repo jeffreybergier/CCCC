@@ -64,8 +64,8 @@ extension Converter {
                 })
             case .newValue(let model):
                 return AnyView(
-                    List(quotes: model.quotes,
-                         userInput: self.userInput)
+                    Converter.List(quotes: model.quotes,
+                                   userInput: self.userInput)
                 )
             case .error:
                 return AnyView(VStack{

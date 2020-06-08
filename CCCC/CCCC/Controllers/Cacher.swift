@@ -56,7 +56,7 @@ class Cacher<T: Codable & Hashable> {
     // Error type of Never because Publisher runs on a timer, so it never
     // ends. Instead, any errors are passed through the `Value` type
     private(set) lazy var observe: AnyPublisher<Value, Never> = {
-        return _observe.handleEvents(receiveSubscription: { [weak self] _ in
+        return self._observe.handleEvents(receiveSubscription: { [weak self] _ in
             // Dispatch Async so the subscription finishes before calling `update`
             DispatchQueue.main.async { self?.update() }
         }, receiveCancel: { [weak self] in
@@ -66,6 +66,8 @@ class Cacher<T: Codable & Hashable> {
         })
         .eraseToAnyPublisher()
     }()
+    
+    // Preserve this private property because AnyPublisher removes API to .send new events
     private let _observe: CurrentValueSubject<Value, Never> = .init(.initialLoad)
     
     init(originalLoad: @escaping OriginalLoad,
@@ -103,22 +105,22 @@ class Cacher<T: Codable & Hashable> {
             }
             .catch { [originalLoad] _ in return originalLoad() }  // 3) If cache error, perform `originalLoad`
             .map { [expiresIn] in
-                Cache(expirationDate: Date() + expiresIn,         // 4) Map new payload for caching
-                      payload: $0)
+                Cache(expirationDate: Date() + expiresIn - 1,     // 4) Map new payload for caching
+                      payload: $0)                                //    Subtract 1 second so cache is expired when timer fires
             }
             .flatMap { [cacheWrite] cache in cacheWrite(cache)    // 5) Save new cache to disk
                 .map { cache.payload } }                          // 6) Map so final payload can be observed
-            .sink(receiveCompletion: { [weak self] in             // 7) Send the final payload through `observe` publisher
+            .sink(receiveCompletion: { [weak self] in
+                    self?.invalidateToken()
                     guard case .failure(let error) = $0 else { return }
                     self?._observe.send(.error(error))
-                    self?.invalidate()
                 }, receiveValue: { [weak self] in
-                    self?._observe.send(.newValue($0))
-                    self?.invalidate()
+                    self?._observe.send(.newValue($0))            // 7) Send the final payload through `observe` publisher
+                    self?.invalidateToken()
                 })
     }
     
-    private func invalidate() {
+    private func invalidateToken() {
         self.token?.cancel()
         self.token = nil
     }
@@ -126,7 +128,7 @@ class Cacher<T: Codable & Hashable> {
     deinit {
         self.timer?.invalidate()
         self.timer = nil
-        self.invalidate()
+        self.invalidateToken()
         // In DEBUG mode print deinit to verify no
         // memory leaks during unit testing
         assert({ print("DEINIT"); return true; }())

@@ -36,7 +36,7 @@ struct Converter: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                Entry(viewModel: self.userInput)
+                Entry(userInput: self.userInput)
                     .padding()
                 Divider()
                 Switch(value: self.data.model,
@@ -82,6 +82,6 @@ extension Converter {
 struct Converter_Preview: PreviewProvider {
     static var previews: some View {
         Converter(data: Converter.SWIFT_PREVIEWS_DataViewModel(),
-                  userInput: .init(userInput: "100"))
+                  userInput: .init())
     }
 }

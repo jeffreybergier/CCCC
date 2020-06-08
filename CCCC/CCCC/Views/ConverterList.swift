@@ -36,6 +36,9 @@ extension Converter {
             SwiftUI.List(self.quotes) { quote in
                 ViewSwitch(quote: quote,
                            amount: self.userInput.formattedPrice(withRate: quote.rate))
+                    // adding background view makes tap gesture below work more reliably
+                    .background(Color(UIColor.systemBackground))
+                    .onTapGesture { self.userInput.selectedQuote = quote }
             }
         }
     }
@@ -86,13 +89,15 @@ fileprivate func formattedRate(_ rate: Double) -> String {
 struct List_Preview1: PreviewProvider {
     static var previews: some View {
         let data: [Converter.Model.Quote] = TESTING_model.quotes
-        return Converter.List(quotes: data, userInput: .init(userInput: "100"))
+        return Converter.List(quotes: data, userInput: .init(amountString: "100",
+                                                             selectedQuote: SWIFT_PREVIEWS_quote))
     }
 }
 
 struct List_Preview2: PreviewProvider {
     static var previews: some View {
         let data: [Converter.Model.Quote] = TESTING_model.quotes
-        return Converter.List(quotes: data, userInput: .init(userInput: "100000000"))
+        return Converter.List(quotes: data, userInput: .init(amountString: "100000000",
+                                                             selectedQuote: SWIFT_PREVIEWS_quote))
     }
 }

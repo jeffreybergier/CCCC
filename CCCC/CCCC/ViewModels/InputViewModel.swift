@@ -32,7 +32,19 @@ import Foundation
 extension Converter {
     class UserInputViewModel: ObservableObject {
         
-        @Published var userInput: String
+        @Published var amountString: String
+        @Published var selectedQuote: Model.Quote?
+        
+        var textBoxHint: String {
+            guard let selectedQuote = self.selectedQuote else {
+                return "Tap Currency Below"
+            }
+            return "Enter \(selectedQuote.code) Amount"
+        }
+        
+        var selectedFlag: String {
+            return self.selectedQuote?.flag ?? "🏳️"
+        }
         
         private let formatter: NumberFormatter = {
             let f = NumberFormatter()
@@ -41,13 +53,19 @@ extension Converter {
             return f
         }()
         
-        init(userInput: String = "") {
-            self.userInput = userInput
+        init(amountString: String = "", selectedQuote: Model.Quote? = nil) {
+            self.amountString = amountString
+            self.selectedQuote = selectedQuote
         }
         
         func formattedPrice(withRate rate: Double) -> String? {
-            guard let input = Double(self.userInput) else { return nil }
-            return self.formatter.string(from: .init(value: input * rate))
+            guard
+                let input = Double(self.amountString),
+                let selectedQuote = self.selectedQuote
+            else { return nil }
+            let usdAmount = input / selectedQuote.rate
+            let newRateAmount = usdAmount * rate
+            return self.formatter.string(from: .init(value: newRateAmount))
         }
     }
 }

@@ -50,6 +50,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 struct SceneDelegate_Previews: PreviewProvider {
     static var previews: some View {
         Converter(data: Converter.SWIFT_PREVIEWS_DataViewModel(),
-                  userInput: .init(userInput: "100"))
+                  userInput: .init())
     }
 }

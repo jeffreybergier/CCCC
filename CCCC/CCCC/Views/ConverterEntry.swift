@@ -30,28 +30,45 @@ import SwiftUI
 
 extension Converter {
     struct Entry: View {
-        @ObservedObject var viewModel: UserInputViewModel
+        @ObservedObject var userInput: UserInputViewModel
         var body: some View {
-            HStack {
-                Text("🇺🇸").font(.largeTitle)
-                TextField("Enter USD", text: self.$viewModel.userInput)
+            return HStack {
+                Text(self.userInput.selectedFlag).font(.largeTitle)
+                TextField(self.userInput.textBoxHint, text: self.$userInput.amountString)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.decimalPad)
                     .font(.title)
-                Button(action: { self.viewModel.userInput = "" }, label: { Text("✖️") })
+                Button(action: {
+                    // First delete the amount
+                    // If the amount is already deleted then clear
+                    // the selected Quote
+                    if self.userInput.amountString == "" {
+                        self.userInput.selectedQuote = nil
+                    } else {
+                        self.userInput.amountString = ""
+                    }
+                }, label: { Text("✖️") })
             }
+            .disabled(self.userInput.selectedQuote == nil)
         }
     }
 }
 
 struct Entry_Preview1: PreviewProvider {
     static var previews: some View {
-        Converter.Entry(viewModel: .init(userInput: "100000"))
+        Converter.Entry(userInput: .init())
     }
 }
 
 struct Entry_Preview2: PreviewProvider {
     static var previews: some View {
-        Converter.Entry(viewModel: .init(userInput: ""))
+        Converter.Entry(userInput: .init(selectedQuote: SWIFT_PREVIEWS_quote))
+    }
+}
+
+struct Entry_Preview3: PreviewProvider {
+    static var previews: some View {
+        Converter.Entry(userInput: .init(amountString: "100000",
+                                         selectedQuote: SWIFT_PREVIEWS_quote))
     }
 }

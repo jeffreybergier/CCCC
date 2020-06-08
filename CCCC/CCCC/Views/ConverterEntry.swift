@@ -38,8 +38,7 @@ extension Converter {
         @State private var keyboardPresented: Bool = false
         
         var body: some View {
-            let buttonLabel = self.keyboardPresented ? "Done" : "✖️"
-            return HStack {
+            HStack {
                 Text(self.userInput.selectedFlag).font(.largeTitle)
                 TextField(self.userInput.textBoxHint, text: self.$userInput.amountString)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -61,7 +60,10 @@ extension Converter {
                     } else {
                         self.userInput.selectedQuote = nil
                     }
-                }, label: { Text(buttonLabel).font(.headline) })
+                }, label: {
+                    Text(self.keyboardPresented ? "Done" : "✖️")
+                        .font(.headline)
+                })
             }
             .disabled(!self.userInput.isQuoteSelected)
         }

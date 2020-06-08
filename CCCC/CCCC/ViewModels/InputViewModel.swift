@@ -32,10 +32,13 @@ import Foundation
 extension Converter {
     class UserInputViewModel: ObservableObject {
         
-        private let formatter: NumberFormatter = {
+        private let currencyFormatter = LazyCurrencyFormatterCache()
+        
+        private let numberFormatter: NumberFormatter = {
             let f = NumberFormatter()
-            f.numberStyle = .currency
-            f.currencySymbol = ""
+            f.numberStyle = .decimal
+            f.maximumFractionDigits = 2
+            f.minimumFractionDigits = 0
             return f
         }()
         
@@ -83,15 +86,32 @@ extension Converter {
             else { return nil }
             let fromAmount = input / fromQuote.rate
             let toAmount = fromAmount * toQuote.rate
-            return self.formatter.string(from: .init(value: toAmount))
+            return self.currencyFormatter[toQuote.code].string(from: .init(value: toAmount))
         }
         
         func formattedRate(for toQuote: Model.Quote) -> String {
             guard let fromQuote = self.selectedQuote else { return "" }
             let fromRate = 1 / fromQuote.rate
             let toRate = fromRate * toQuote.rate
-            return self.formatter.string(from: .init(value: toRate))
-                                 .map { $0 + ":1" } ?? ""
+            return self.numberFormatter.string(from: .init(value: toRate))
+                                       .map { $0 + ":1" } ?? ""
         }
+    }
+}
+
+fileprivate class LazyCurrencyFormatterCache {
+    private var formatters: [String: NumberFormatter] = [:]
+    subscript(_ code: String) -> NumberFormatter {
+        // Different currencies have different rules for
+        // number of fraction digits and other formatting.
+        // This may be overkill, but I'm lettinng NSNumberFormatter
+        // decide what to do based on the currency being formatted
+        if let formatter = self.formatters[code] { return formatter }
+        let new = NumberFormatter()
+        new.numberStyle = .currency
+        new.currencyCode = code
+        new.currencySymbol = ""
+        self.formatters[code] = new
+        return new
     }
 }

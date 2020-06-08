@@ -30,7 +30,7 @@ import Combine
 import Foundation
 
 private let kAPIKey: String = {
-    fatalError("Don't check private keys into the repo")
+    fatalError("Don't check private keys into the repo. Go here to get a free key: https://currencylayer.com/quickstart")
 }()
 
 private let kAPIURL: URL = {

@@ -13,7 +13,7 @@
 		486E8FF2248B868C00095128 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF1248B868C00095128 /* ModelTests.swift */; };
 		486E8FF4248BB3BF00095128 /* ConverterList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF3248BB3BF00095128 /* ConverterList.swift */; };
 		486E8FF6248BC37B00095128 /* ConverterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF5248BC37B00095128 /* ConverterEntry.swift */; };
-		486E8FF8248BC98A00095128 /* CurrencyDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF7248BC98A00095128 /* CurrencyDataSource.swift */; };
+		486E8FF8248BC98A00095128 /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF7248BC98A00095128 /* DataViewModel.swift */; };
 		486E8FFC248BD74500095128 /* SwiftPreviewsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FFB248BD74500095128 /* SwiftPreviewsContent.swift */; };
 		486E8FFE248DD61500095128 /* InputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FFD248DD61500095128 /* InputViewModel.swift */; };
 		486E9004248DD99F00095128 /* ConverterListCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E9003248DD99E00095128 /* ConverterListCells.swift */; };
@@ -44,7 +44,7 @@
 		486E8FF1248B868C00095128 /* ModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
 		486E8FF3248BB3BF00095128 /* ConverterList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterList.swift; sourceTree = "<group>"; };
 		486E8FF5248BC37B00095128 /* ConverterEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterEntry.swift; sourceTree = "<group>"; };
-		486E8FF7248BC98A00095128 /* CurrencyDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyDataSource.swift; sourceTree = "<group>"; };
+		486E8FF7248BC98A00095128 /* DataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModel.swift; sourceTree = "<group>"; };
 		486E8FFB248BD74500095128 /* SwiftPreviewsContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPreviewsContent.swift; sourceTree = "<group>"; };
 		486E8FFD248DD61500095128 /* InputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewModel.swift; sourceTree = "<group>"; };
 		486E9003248DD99E00095128 /* ConverterListCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterListCells.swift; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				486E8FFD248DD61500095128 /* InputViewModel.swift */,
-				486E8FF7248BC98A00095128 /* CurrencyDataSource.swift */,
+				486E8FF7248BC98A00095128 /* DataViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -270,7 +270,7 @@
 				486E8FF4248BB3BF00095128 /* ConverterList.swift in Sources */,
 				48AFA35A248A2BA5002CAFDC /* AppDelegate.swift in Sources */,
 				486E8FFE248DD61500095128 /* InputViewModel.swift in Sources */,
-				486E8FF8248BC98A00095128 /* CurrencyDataSource.swift in Sources */,
+				486E8FF8248BC98A00095128 /* DataViewModel.swift in Sources */,
 				48AFA380248A2DA0002CAFDC /* Cacher.swift in Sources */,
 				486E8FFC248BD74500095128 /* SwiftPreviewsContent.swift in Sources */,
 				486E8FEE248B806500095128 /* CacheReadWrite.swift in Sources */,

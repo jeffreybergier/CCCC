@@ -30,7 +30,7 @@ import SwiftUI
 
 extension Converter {
     struct List: View {
-        let quotes: [CurrencyModel.Quote]
+        let quotes: [Converter.Model.Quote]
         @ObservedObject var userInput: UserInputViewModel
         var body: some View {
             SwiftUI.List(self.quotes) { quote in
@@ -46,7 +46,7 @@ extension Converter.List {
     // This simple ViewSwitch helps me change the view based
     // on the state of the model
     fileprivate struct ViewSwitch: View {
-        let quote: CurrencyModel.Quote
+        let quote: Converter.Model.Quote
         let amount: String?
         var body: some View {
             if let amount = self.amount {
@@ -83,23 +83,16 @@ fileprivate func formattedRate(_ rate: Double) -> String {
     "1:" + formatter.string(from: .init(value: rate))!
 }
 
-// Required for List
-extension CurrencyModel.Quote: Identifiable {
-    var id: String {
-        _key
-    }
-}
-
 struct List_Preview1: PreviewProvider {
     static var previews: some View {
-        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        let data: [Converter.Model.Quote] = TESTING_model.quotes
         return Converter.List(quotes: data, userInput: .init(userInput: "100"))
     }
 }
 
 struct List_Preview2: PreviewProvider {
     static var previews: some View {
-        let data: [CurrencyModel.Quote] = TESTING_model.quotes
+        let data: [Converter.Model.Quote] = TESTING_model.quotes
         return Converter.List(quotes: data, userInput: .init(userInput: "100000000"))
     }
 }

@@ -52,45 +52,49 @@ import Foundation
      }
  }
  */
-
-struct CurrencyModel: Codable, Hashable {
-    var terms: URL
-    var privacy: URL
-    var source: String
-    var _quotes: QuoteWrapper
-    var quotes: [Quote] {
-        _quotes.values
-    }
-    
-    struct Quote: Hashable {
-        var rate: Double
-        var code: String
-        var flag: String {
-            flagMap[self.code] ?? "🏳️"
+extension Converter {
+    struct Model: Codable, Hashable {
+        private var _quotes: QuoteWrapper
+        var quotes: [Quote] {
+            _quotes.values
         }
         
-        var _key: String
+        private enum CodingKeys: String, CodingKey {
+            case _quotes = "quotes"
+        }
         
-        init(key: String, value: Double) throws {
-            guard key.count == 6 else { throw NSError.generic() }
+        struct Quote: Hashable {
+            var rate: Double
+            var code: String
+            var flag: String {
+                flagMap[self.code] ?? "🏳️"
+            }
             
-            self._key = key
-            self.rate = value
+            fileprivate var _key: String
             
-            let middleIndex = key.index(key.startIndex, offsetBy: 3)
-            self.code = String(key[middleIndex..<key.endIndex])
+            init(key: String, value: Double) throws {
+                guard key.count == 6 else { throw NSError.generic() }
+                
+                self._key = key
+                self.rate = value
+                
+                let middleIndex = key.index(key.startIndex, offsetBy: 3)
+                self.code = String(key[middleIndex..<key.endIndex])
+            }
         }
     }
 }
 
-extension CurrencyModel {
-    private enum CodingKeys: String, CodingKey {
-        case _quotes = "quotes", terms, privacy, source
+// Required for List
+extension Converter.Model.Quote: Identifiable {
+    var id: String {
+        _key
     }
 }
 
-struct QuoteWrapper: Codable, Hashable {
-    var values: [CurrencyModel.Quote]
+// Wrapper allows me to build [Quote] from JSON Dictionary
+fileprivate struct QuoteWrapper: Codable, Hashable {
+    var values: [Converter.Model.Quote]
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let dictionary = try container.decode([String: Double].self)

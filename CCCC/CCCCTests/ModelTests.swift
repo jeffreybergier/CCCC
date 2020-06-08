@@ -45,7 +45,7 @@ class ModelTests: XCTestCase {
     func test_networkLoad() {
         let exp = XCTestExpectation()
         exp.expectedFulfillmentCount = 2
-        self.token = networkLoad().sink(receiveCompletion: {
+        self.token = Converter.DataViewModel.networkLoad().sink(receiveCompletion: {
             switch $0 {
             case .failure:
                 XCTFail()
@@ -53,6 +53,7 @@ class ModelTests: XCTestCase {
                 exp.fulfill()
             }
         }, receiveValue: { model in
+            XCTAssertFalse(model.quotes.isEmpty)
             exp.fulfill()
         })
         self.wait(for: [exp], timeout: 30)
@@ -63,10 +64,10 @@ class ModelTests: XCTestCase {
         XCTAssertNotNil(self.modelFromFakeData())
     }
     
-    private func modelFromFakeData() -> CurrencyModel? {
+    private func modelFromFakeData() -> Converter.Model? {
         guard let data = TESTING_networkResponse.data(using: .utf8) else { XCTFail(); return nil; }
         do {
-            return try JSONDecoder().decode(CurrencyModel.self, from: data)
+            return try JSONDecoder().decode(Converter.Model.self, from: data)
         } catch {
             XCTFail()
             return nil

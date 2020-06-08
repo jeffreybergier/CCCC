@@ -41,16 +41,16 @@ extension Converter {
     
     class DataViewModel: ObservableObject {
         
-        typealias Value = Cacher<CurrencyModel>.Value
+        typealias Value = Cacher<Model>.Value
         
         @Published var model: Value = .initialLoad
         
-        private let cacher: Cacher<CurrencyModel>
+        private let cacher: Cacher<Model>
         
-        init(networkLoad: @escaping Cacher<CurrencyModel>.OriginalLoad,
+        init(networkLoad: @escaping Cacher<Model>.OriginalLoad,
              expiresIn: TimeInterval)
         {
-            self.cacher = Cacher<CurrencyModel>(originalLoad: networkLoad,
+            self.cacher = Cacher<Model>(originalLoad: networkLoad,
                                                 cacheRead: DataViewModel.cacheRead,
                                                 cacheWrite: DataViewModel.cacheWrite,
                                                 expiresIn: expiresIn)

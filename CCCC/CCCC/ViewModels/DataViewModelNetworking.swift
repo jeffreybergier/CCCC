@@ -42,7 +42,7 @@ private let kAPIURL: URL = {
 }()
 
 extension Converter.DataViewModel {
-    static let networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
+    static let networkLoad: Cacher<Converter.Model>.OriginalLoad = {
         Future { promise in
             let task = URLSession.shared.dataTask(with: kAPIURL) { (data, response, error) in
                 let q = DispatchQueue.main
@@ -59,7 +59,7 @@ extension Converter.DataViewModel {
                     return
                 }
                 do {
-                    let model = try JSONDecoder().decode(CurrencyModel.self, from: data)
+                    let model = try JSONDecoder().decode(Converter.Model.self, from: data)
                     q.async { promise(.success(model)) }
                 } catch {
                     q.async { promise(.failure(error)) }

@@ -35,12 +35,12 @@ private let kCacheURL: URL = {
 }()
 
 extension Converter.DataViewModel {
-    static let cacheRead: Cacher<CurrencyModel>.CacheRead = {
+    static let cacheRead: Cacher<Converter.Model>.CacheRead = {
         Future { promise in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
                     let data = try Data(contentsOf: kCacheURL)
-                    let decode = try PropertyListDecoder().decode(Cacher<CurrencyModel>.Cache.self, from: data)
+                    let decode = try PropertyListDecoder().decode(Cacher<Converter.Model>.Cache.self, from: data)
                     DispatchQueue.main.async {
                         promise(.success(decode))
                     }
@@ -53,7 +53,7 @@ extension Converter.DataViewModel {
         }
     }
     
-    static let cacheWrite: Cacher<CurrencyModel>.CacheWrite = { cache in
+    static let cacheWrite: Cacher<Converter.Model>.CacheWrite = { cache in
         Future { promise in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {

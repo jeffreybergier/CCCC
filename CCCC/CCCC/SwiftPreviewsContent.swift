@@ -37,12 +37,12 @@ extension Converter {
     }
 }
 
-var TESTING_model: CurrencyModel {
+var TESTING_model: Converter.Model {
     let data = TESTING_networkResponse.data(using: .utf8)!
-    return try! JSONDecoder().decode(CurrencyModel.self, from: data)
+    return try! JSONDecoder().decode(Converter.Model.self, from: data)
 }
 
-let TESTING_networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
+let TESTING_networkLoad: Cacher<Converter.Model>.OriginalLoad = {
     Future { promise in
         promise(.success(TESTING_model))
     }

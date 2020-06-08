@@ -51,9 +51,9 @@ extension Converter {
              expiresIn: TimeInterval)
         {
             self.cacher = Cacher<Model>(originalLoad: networkLoad,
-                                                cacheRead: DataViewModel.cacheRead,
-                                                cacheWrite: DataViewModel.cacheWrite,
-                                                expiresIn: expiresIn)
+                                        cacheRead: DataViewModel.cacheRead,
+                                        cacheWrite: DataViewModel.cacheWrite,
+                                        expiresIn: expiresIn)
             self.token = self.cacher.observe.assign(to: \.model, on: self)
         }
         

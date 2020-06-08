@@ -30,7 +30,7 @@ import SwiftUI
 
 struct Converter: View {
     
-    @ObservedObject var data: AbstractCurrencyDataSource
+    @ObservedObject var data: DataViewModel
     @ObservedObject var userInput: UserInputViewModel
     
     var body: some View {
@@ -52,7 +52,7 @@ extension Converter {
     // This simple Switch helps me change the view based
     // on the state of the mdoel
     fileprivate struct Switch: View {
-        let value: CurrencyDataSource.Base.Value
+        let value: DataViewModel.Value
         let userInput: UserInputViewModel
         var body: some View {
             switch value {
@@ -80,6 +80,7 @@ extension Converter {
 
 struct Converter_Preview: PreviewProvider {
     static var previews: some View {
-        Converter(data: SWIFT_PREVIEWS_currencyDataSource(), userInput: .init(userInput: "100"))
+        Converter(data: Converter.SWIFT_PREVIEWS_DataViewModel(),
+                  userInput: .init(userInput: "100"))
     }
 }

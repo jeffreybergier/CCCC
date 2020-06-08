@@ -29,32 +29,38 @@
 import Combine
 import Foundation
 
-// Real Data Source Used for the App
-// See `SwiftPreviewsContent.swift` for the dummy subclass for Swift Previews
-class CurrencyDataSource: AbstractCurrencyDataSource {
-    init() {
-        super.init(networkLoad: networkLoad, expiresIn: 60*60*24) // 30 minute timer
-    }
-}
-
-class AbstractCurrencyDataSource: ObservableObject {
+extension Converter {
     
-    typealias Base = Cacher<CurrencyModel>
-    
-    @Published var model: Base.Value = .initialLoad
-    private let cacher: Base
-    
-    init(networkLoad: @escaping Base.OriginalLoad, expiresIn: TimeInterval) {
-        self.cacher = Cacher<CurrencyModel>(originalLoad: networkLoad,
-                                           cacheRead: cacheRead,
-                                           cacheWrite: cacheWrite,
-                                           expiresIn: expiresIn)
-        self.token = self.cacher.observe.assign(to: \.model, on: self)
+    // Real Data Source Used for the App
+    // See `SwiftPreviewsContent.swift` for the mock subclass for Swift Previews
+    class ProductionDataViewModel: DataViewModel {
+        init() {
+            super.init(networkLoad: networkLoad, expiresIn: 60*30) // 30 minute timer
+        }
     }
     
-    private var token: AnyCancellable?
-    
-    deinit {
-        self.token?.cancel()
+    class DataViewModel: ObservableObject {
+        
+        typealias Value = Cacher<CurrencyModel>.Value
+        
+        @Published var model: Value = .initialLoad
+        
+        private let cacher: Cacher<CurrencyModel>
+        
+        init(networkLoad: @escaping Cacher<CurrencyModel>.OriginalLoad,
+             expiresIn: TimeInterval)
+        {
+            self.cacher = Cacher<CurrencyModel>(originalLoad: networkLoad,
+                                                cacheRead: cacheRead,
+                                                cacheWrite: cacheWrite,
+                                                expiresIn: expiresIn)
+            self.token = self.cacher.observe.assign(to: \.model, on: self)
+        }
+        
+        private var token: AnyCancellable?
+        
+        deinit {
+            self.token?.cancel()
+        }
     }
 }

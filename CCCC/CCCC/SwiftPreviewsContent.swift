@@ -29,9 +29,11 @@
 import Combine
 import Foundation
 
-class SWIFT_PREVIEWS_currencyDataSource: AbstractCurrencyDataSource {
-    init() {
-        super.init(networkLoad: TESTING_networkLoad, expiresIn: 30)
+extension Converter {
+    class SWIFT_PREVIEWS_DataViewModel: Converter.DataViewModel {
+        init() {
+            super.init(networkLoad: TESTING_networkLoad, expiresIn: 30)
+        }
     }
 }
 

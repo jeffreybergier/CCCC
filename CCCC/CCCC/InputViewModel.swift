@@ -1,8 +1,8 @@
 //
-//  CurrencyEntry.swift
+//  InputViewModel.swift
 //  CCCC
 //
-//  Created by Jeffrey Bergier on 2020/06/06.
+//  Created by Jeffrey Bergier on 2020/06/08.
 //  Copyright © 2020 Jeffrey Bergier.
 //
 //  MIT License
@@ -26,32 +26,28 @@
 //  SOFTWARE.
 //
 
-import SwiftUI
+import Combine
+import Foundation
 
 extension Converter {
-    struct Entry: View {
-        @ObservedObject var viewModel: UserInputViewModel
-        var body: some View {
-            HStack {
-                Text("🇺🇸").font(.largeTitle)
-                TextField("Enter USD", text: self.$viewModel.userInput)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.decimalPad)
-                    .font(.title)
-                Button(action: { self.viewModel.userInput = "" }, label: { Text("✖️") })
-            }
+    class UserInputViewModel: ObservableObject {
+        
+        @Published var userInput: String
+        
+        private let formatter: NumberFormatter = {
+            let f = NumberFormatter()
+            f.numberStyle = .currency
+            f.currencySymbol = ""
+            return f
+        }()
+        
+        init(userInput: String = "") {
+            self.userInput = userInput
         }
-    }
-}
-
-struct Entry_Preview1: PreviewProvider {
-    static var previews: some View {
-        Converter.Entry(viewModel: .init(userInput: "100000"))
-    }
-}
-
-struct Entry_Preview2: PreviewProvider {
-    static var previews: some View {
-        Converter.Entry(viewModel: .init(userInput: ""))
+        
+        func formattedPrice(withRate rate: Double) -> String? {
+            guard let input = Double(self.userInput) else { return nil }
+            return self.formatter.string(from: .init(value: input * rate))
+        }
     }
 }

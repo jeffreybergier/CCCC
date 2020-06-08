@@ -30,17 +30,17 @@ import SwiftUI
 
 struct Converter: View {
     
-    @ObservedObject var dataSource: AbstractCurrencyDataSource
-    @ObservedObject var viewModel = Entry.ViewModel()
+    @ObservedObject var data: AbstractCurrencyDataSource
+    @ObservedObject var userInput: UserInputViewModel
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                Entry(viewModel: self.viewModel)
+                Entry(viewModel: self.userInput)
                     .padding()
                 Divider()
-                Switch(value: self.dataSource.model,
-                       viewModel: self.viewModel)
+                Switch(value: self.data.model,
+                       userInput: self.userInput)
             }
             .navigationBarTitle("Ｃ四つ", displayMode: .inline)
         }
@@ -49,7 +49,7 @@ struct Converter: View {
 
 struct Converter_Preview: PreviewProvider {
     static var previews: some View {
-        Converter(dataSource: SWIFT_PREVIEWS_currencyDataSource())
+        Converter(data: SWIFT_PREVIEWS_currencyDataSource(), userInput: .init(userInput: "100"))
     }
 }
 
@@ -59,7 +59,7 @@ extension Converter {
     // on the state of the mdoel
     fileprivate struct Switch: View {
         let value: CurrencyDataSource.Base.Value
-        let viewModel: Entry.ViewModel
+        let userInput: UserInputViewModel
         var body: some View {
             switch value {
             case .initialLoad:
@@ -71,7 +71,7 @@ extension Converter {
             case .newValue(let model):
                 return AnyView(
                     List(quotes: model.quotes,
-                         viewModel: self.viewModel)
+                         userInput: self.userInput)
                 )
             case .error:
                 return AnyView(VStack{

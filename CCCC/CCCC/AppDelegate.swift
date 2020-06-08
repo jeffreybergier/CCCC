@@ -44,3 +44,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+extension UIApplication {
+    // Hack that allows for keyboard dismissal in SwiftUI
+    // Maybe this can be removed in the future
+    func endEditing() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil,
+                                        from: nil,
+                                        for: nil)
+    }
+}
+

@@ -30,8 +30,15 @@ import SwiftUI
 
 extension Converter {
     struct Entry: View {
+        
         @ObservedObject var userInput: UserInputViewModel
+        
+        // Hack that allows for keyboard dismissal in SwiftUI
+        // Maybe this can be removed in the future
+        @State private var keyboardPresented: Bool = false
+        
         var body: some View {
+            let buttonLabel = self.keyboardPresented ? "Done" : "✖️"
             return HStack {
                 Text(self.userInput.selectedFlag).font(.largeTitle)
                 TextField(self.userInput.textBoxHint, text: self.$userInput.amountString)
@@ -39,7 +46,13 @@ extension Converter {
                     .keyboardType(.decimalPad)
                     .font(.title)
                     .multilineTextAlignment(self.userInput.isAmountEntered ? .leading : .center)
+                    .onTapGesture { withAnimation { self.keyboardPresented = true } }
                 Button(action: {
+                    guard self.keyboardPresented == false else {
+                        withAnimation { self.keyboardPresented = false }
+                        UIApplication.shared.endEditing()
+                        return
+                    }
                     // First delete the amount
                     // If the amount is already deleted then clear
                     // the selected Quote
@@ -48,7 +61,7 @@ extension Converter {
                     } else {
                         self.userInput.selectedQuote = nil
                     }
-                }, label: { Text("✖️") })
+                }, label: { Text(buttonLabel).font(.headline) })
             }
             .disabled(!self.userInput.isQuoteSelected)
         }

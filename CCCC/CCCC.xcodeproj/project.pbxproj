@@ -25,6 +25,7 @@
 		48AFA371248A2BA7002CAFDC /* CacherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA370248A2BA7002CAFDC /* CacherTests.swift */; };
 		48AFA37E248A2CF7002CAFDC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 48AFA37D248A2CF7002CAFDC /* README.md */; };
 		48AFA380248A2DA0002CAFDC /* Cacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA37F248A2DA0002CAFDC /* Cacher.swift */; };
+		48EDE4B8248E23CF008AFAB4 /* UserInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EDE4B7248E23CF008AFAB4 /* UserInputViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		48AFA372248A2BA7002CAFDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48AFA37D248A2CF7002CAFDC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		48AFA37F248A2DA0002CAFDC /* Cacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cacher.swift; sourceTree = "<group>"; };
+		48EDE4B7248E23CF008AFAB4 /* UserInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInputViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 			children = (
 				48AFA370248A2BA7002CAFDC /* CacherTests.swift */,
 				486E8FF1248B868C00095128 /* ModelTests.swift */,
+				48EDE4B7248E23CF008AFAB4 /* UserInputViewModelTests.swift */,
 				48AFA372248A2BA7002CAFDC /* Info.plist */,
 			);
 			path = CCCCTests;
@@ -285,6 +288,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48EDE4B8248E23CF008AFAB4 /* UserInputViewModelTests.swift in Sources */,
 				48AFA371248A2BA7002CAFDC /* CacherTests.swift in Sources */,
 				486E8FF2248B868C00095128 /* ModelTests.swift in Sources */,
 			);

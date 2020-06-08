@@ -72,25 +72,11 @@ extension Converter.List {
     }
 }
 
-// Number formatters are expensive to create
-// or change, so I'm keeping this one as a
-// fileprivate constant for performance.
-fileprivate let formatter: NumberFormatter = {
-    let f = NumberFormatter()
-    f.numberStyle = .currency
-    f.currencySymbol = ""
-    return f
-}()
-
-fileprivate func formattedRate(_ rate: Double) -> String {
-    "1:" + formatter.string(from: .init(value: rate))!
-}
-
 struct List_Preview1: PreviewProvider {
     static var previews: some View {
         let data: [Converter.Model.Quote] = TESTING_model.quotes
         return Converter.List(quotes: data, userInput: .init(amountString: "100",
-                                                             selectedQuote: SWIFT_PREVIEWS_quote))
+                                                             selectedQuote: SWIFT_PREVIEWS_quote1))
     }
 }
 
@@ -98,6 +84,6 @@ struct List_Preview2: PreviewProvider {
     static var previews: some View {
         let data: [Converter.Model.Quote] = TESTING_model.quotes
         return Converter.List(quotes: data, userInput: .init(amountString: "100000000",
-                                                             selectedQuote: SWIFT_PREVIEWS_quote))
+                                                             selectedQuote: SWIFT_PREVIEWS_quote2))
     }
 }

@@ -63,13 +63,13 @@ struct Entry_Preview1: PreviewProvider {
 
 struct Entry_Preview2: PreviewProvider {
     static var previews: some View {
-        Converter.Entry(userInput: .init(selectedQuote: SWIFT_PREVIEWS_quote))
+        Converter.Entry(userInput: .init(selectedQuote: SWIFT_PREVIEWS_quote1))
     }
 }
 
 struct Entry_Preview3: PreviewProvider {
     static var previews: some View {
         Converter.Entry(userInput: .init(amountString: "100000",
-                                         selectedQuote: SWIFT_PREVIEWS_quote))
+                                         selectedQuote: SWIFT_PREVIEWS_quote2))
     }
 }

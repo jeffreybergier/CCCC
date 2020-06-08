@@ -76,21 +76,21 @@ extension Converter {
             self.amountString = ""
         }
         
-        func formattedAmount(for quote: Model.Quote) -> String? {
+        func formattedAmount(for toQuote: Model.Quote) -> String? {
             guard
                 let input = Double(self.amountString),
-                let selectedQuote = self.selectedQuote
+                let fromQuote = self.selectedQuote
             else { return nil }
-            let usdAmount = input / selectedQuote.rate
-            let newRateAmount = usdAmount * quote.rate
-            return self.formatter.string(from: .init(value: newRateAmount))
+            let fromAmount = input / fromQuote.rate
+            let toAmount = fromAmount * toQuote.rate
+            return self.formatter.string(from: .init(value: toAmount))
         }
         
-        func formattedRate(for quote: Model.Quote) -> String {
-            guard let selectedQuote = self.selectedQuote else { return "" }
-            let baseRate = 1 / selectedQuote.rate
-            let newRate = baseRate * quote.rate
-            return self.formatter.string(from: .init(value: newRate))
+        func formattedRate(for toQuote: Model.Quote) -> String {
+            guard let fromQuote = self.selectedQuote else { return "" }
+            let fromRate = 1 / fromQuote.rate
+            let toRate = fromRate * toQuote.rate
+            return self.formatter.string(from: .init(value: toRate))
                                  .map { $0 + ":1" } ?? ""
         }
     }

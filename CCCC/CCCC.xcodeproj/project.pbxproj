@@ -25,6 +25,7 @@
 		48AFA371248A2BA7002CAFDC /* CacherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA370248A2BA7002CAFDC /* CacherTests.swift */; };
 		48AFA37E248A2CF7002CAFDC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 48AFA37D248A2CF7002CAFDC /* README.md */; };
 		48AFA380248A2DA0002CAFDC /* Cacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AFA37F248A2DA0002CAFDC /* Cacher.swift */; };
+		48E516A9248E7AB900DD661F /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 48E516A8248E7AB900DD661F /* LICENSE */; };
 		48EDE4B8248E23CF008AFAB4 /* UserInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EDE4B7248E23CF008AFAB4 /* UserInputViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +62,7 @@
 		48AFA372248A2BA7002CAFDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		48AFA37D248A2CF7002CAFDC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		48AFA37F248A2DA0002CAFDC /* Cacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cacher.swift; sourceTree = "<group>"; };
+		48E516A8248E7AB900DD661F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		48EDE4B7248E23CF008AFAB4 /* UserInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInputViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				48AFA37D248A2CF7002CAFDC /* README.md */,
+				48E516A8248E7AB900DD661F /* LICENSE */,
 				48AFA358248A2BA5002CAFDC /* CCCC */,
 				48AFA36F248A2BA7002CAFDC /* CCCCTests */,
 				48AFA357248A2BA5002CAFDC /* Products */,
@@ -250,6 +253,7 @@
 			files = (
 				48AFA366248A2BA7002CAFDC /* LaunchScreen.storyboard in Resources */,
 				48AFA37E248A2CF7002CAFDC /* README.md in Resources */,
+				48E516A9248E7AB900DD661F /* LICENSE in Resources */,
 				48AFA360248A2BA7002CAFDC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

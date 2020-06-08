@@ -44,7 +44,7 @@ extension Converter {
                 TextField(self.userInput.textBoxHint, text: self.$userInput.amountString)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.decimalPad)
-                    .font(.title)
+                    .font(.body)
                     .multilineTextAlignment(self.userInput.isAmountEntered ? .leading : .center)
                     .onTapGesture { withAnimation { self.keyboardPresented = true } }
                 Button(action: {

@@ -35,12 +35,12 @@ extension Converter.List {
         let amount: String
         let rate: String
         var body: some View {
-            HStack(alignment: .lastTextBaseline) {
+            HStack(alignment: .center) {
                 Text(self.flag)
-                    .font(.largeTitle)
+                    .font(.title)
                 Text(self.amount)
                     .lineLimit(1)
-                    .font(Font.title.monospacedDigit())
+                    .font(Font.body.monospacedDigit())
                 Text(self.code)
                     .font(.headline)
                 Spacer()
@@ -55,11 +55,11 @@ extension Converter.List {
         let code: String
         let rate: String
         var body: some View {
-            HStack(alignment: .lastTextBaseline) {
+            HStack(alignment: .center) {
                 Text(self.flag)
-                    .font(.largeTitle)
-                Text(self.code)
                     .font(.title)
+                Text(self.code)
+                    .font(.headline)
                 Spacer()
                 Text(self.rate)
                     .font(Font.subheadline.monospacedDigit())

@@ -21,6 +21,8 @@ If I had more time, I would like  to add the following features:
 - Favorite important currencies that always show at the top
 - Add row selection to see which row is currently be calculated against
 - Add iPad optimized layout
+- Figure out how to do the List layout correctly in SwiftUI. 
+    - Right now, it does not go under the Navigation Bar and does not get the nice blur effect
 
 ## Demo
 ![Screen Capture GIF](ScreenCapture.gif)

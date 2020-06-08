@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "48AFA355248A2BA5002CAFDC"
-               BuildableName = "CCCC.app"
+               BuildableName = "&#xff23;&#x56db;&#x3064;.app"
                BlueprintName = "CCCC"
                ReferencedContainer = "container:CCCC.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "48AFA355248A2BA5002CAFDC"
-            BuildableName = "CCCC.app"
+            BuildableName = "&#xff23;&#x56db;&#x3064;.app"
             BlueprintName = "CCCC"
             ReferencedContainer = "container:CCCC.xcodeproj">
          </BuildableReference>
@@ -74,7 +74,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "48AFA355248A2BA5002CAFDC"
-            BuildableName = "CCCC.app"
+            BuildableName = "&#xff23;&#x56db;&#x3064;.app"
             BlueprintName = "CCCC"
             ReferencedContainer = "container:CCCC.xcodeproj">
          </BuildableReference>

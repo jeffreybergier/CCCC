@@ -49,7 +49,7 @@
 		486E8FFB248BD74500095128 /* SwiftPreviewsContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftPreviewsContent.swift; sourceTree = "<group>"; };
 		486E8FFD248DD61500095128 /* InputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewModel.swift; sourceTree = "<group>"; };
 		486E9003248DD99E00095128 /* ConverterListCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterListCells.swift; sourceTree = "<group>"; };
-		48AFA356248A2BA5002CAFDC /* CCCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		48AFA356248A2BA5002CAFDC /* Ｃ四つ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ｃ四つ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48AFA359248A2BA5002CAFDC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		48AFA35B248A2BA5002CAFDC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		48AFA35D248A2BA5002CAFDC /* Converter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Converter.swift; sourceTree = "<group>"; };
@@ -133,7 +133,7 @@
 		48AFA357248A2BA5002CAFDC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				48AFA356248A2BA5002CAFDC /* CCCC.app */,
+				48AFA356248A2BA5002CAFDC /* Ｃ四つ.app */,
 				48AFA36C248A2BA7002CAFDC /* CCCCTests.xctest */,
 			);
 			name = Products;
@@ -184,7 +184,7 @@
 			);
 			name = CCCC;
 			productName = CCCC;
-			productReference = 48AFA356248A2BA5002CAFDC /* CCCC.app */;
+			productReference = 48AFA356248A2BA5002CAFDC /* Ｃ四つ.app */;
 			productType = "com.apple.product-type.application";
 		};
 		48AFA36B248A2BA7002CAFDC /* CCCCTests */ = {
@@ -445,7 +445,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jeffburg.CCCC;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Ｃ四つ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -466,7 +466,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jeffburg.CCCC;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Ｃ四つ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

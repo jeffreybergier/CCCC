@@ -82,6 +82,6 @@ struct WithAmountCell_Preview2: PreviewProvider {
 
 struct WithoutAmountCell_Preview: PreviewProvider {
     static var previews: some View {
-        Converter.List.WithoutAmountCell(flag: "🇬🇧", code: "GBP", rate: "1:500")
+        Converter.List.WithoutAmountCell(flag: "🇬🇧", code: "GBP", rate: "1.34:1")
     }
 }

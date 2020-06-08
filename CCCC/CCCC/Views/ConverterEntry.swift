@@ -38,18 +38,19 @@ extension Converter {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.decimalPad)
                     .font(.title)
+                    .multilineTextAlignment(self.userInput.isAmountEntered ? .leading : .center)
                 Button(action: {
                     // First delete the amount
                     // If the amount is already deleted then clear
                     // the selected Quote
-                    if self.userInput.amountString == "" {
-                        self.userInput.selectedQuote = nil
+                    if self.userInput.isAmountEntered {
+                        self.userInput.resetAmountEntered()
                     } else {
-                        self.userInput.amountString = ""
+                        self.userInput.selectedQuote = nil
                     }
                 }, label: { Text("✖️") })
             }
-            .disabled(self.userInput.selectedQuote == nil)
+            .disabled(!self.userInput.isQuoteSelected)
         }
     }
 }

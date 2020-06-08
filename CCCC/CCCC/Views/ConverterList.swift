@@ -34,8 +34,7 @@ extension Converter {
         @ObservedObject var userInput: UserInputViewModel
         var body: some View {
             SwiftUI.List(self.quotes) { quote in
-                ViewSwitch(quote: quote,
-                           amount: self.userInput.formattedPrice(withRate: quote.rate))
+                ViewSwitch(quote: quote, userInput: self.userInput)
                     // adding background view makes tap gesture below work more reliably
                     .background(Color(UIColor.systemBackground))
                     .onTapGesture { self.userInput.selectedQuote = quote }
@@ -50,22 +49,23 @@ extension Converter.List {
     // on the state of the model
     fileprivate struct ViewSwitch: View {
         let quote: Converter.Model.Quote
-        let amount: String?
+        @ObservedObject var userInput: Converter.UserInputViewModel
         var body: some View {
-            if let amount = self.amount {
+            let rate = self.userInput.formattedRate(for: quote)
+            if let amount = self.userInput.formattedAmount(for: quote) {
                 return AnyView(
                     Converter.List // bug in swift previews requires full namespace here
                         .WithAmountCell(flag: quote.flag,
                                         code: quote.code,
                                         amount: amount,
-                                        rate: formattedRate(quote.rate))
+                                        rate: rate)
                 )
             } else {
                 return AnyView(
                     Converter.List // bug in swift previews requires full namespace here
                         .WithoutAmountCell(flag: quote.flag,
                                            code: quote.code,
-                                           rate: formattedRate(quote.rate))
+                                           rate: rate)
                 )
             }
         }

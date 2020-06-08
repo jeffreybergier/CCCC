@@ -32,8 +32,26 @@ import Foundation
 extension Converter {
     class UserInputViewModel: ObservableObject {
         
+        private let formatter: NumberFormatter = {
+            let f = NumberFormatter()
+            f.numberStyle = .currency
+            f.currencySymbol = ""
+            return f
+        }()
+        
+        // MARK: State
+        
         @Published var amountString: String
         @Published var selectedQuote: Model.Quote?
+        
+        // MARK: Init
+        
+        init(amountString: String = "", selectedQuote: Model.Quote? = nil) {
+            self.amountString = amountString
+            self.selectedQuote = selectedQuote
+        }
+        
+        // MARK: Helper Functions
         
         var textBoxHint: String {
             guard let selectedQuote = self.selectedQuote else {
@@ -46,26 +64,34 @@ extension Converter {
             return self.selectedQuote?.flag ?? "🏳️"
         }
         
-        private let formatter: NumberFormatter = {
-            let f = NumberFormatter()
-            f.numberStyle = .currency
-            f.currencySymbol = ""
-            return f
-        }()
-        
-        init(amountString: String = "", selectedQuote: Model.Quote? = nil) {
-            self.amountString = amountString
-            self.selectedQuote = selectedQuote
+        var isAmountEntered: Bool {
+            return self.amountString != ""
         }
         
-        func formattedPrice(withRate rate: Double) -> String? {
+        var isQuoteSelected: Bool {
+            return self.selectedQuote != nil
+        }
+        
+        func resetAmountEntered() {
+            self.amountString = ""
+        }
+        
+        func formattedAmount(for quote: Model.Quote) -> String? {
             guard
                 let input = Double(self.amountString),
                 let selectedQuote = self.selectedQuote
             else { return nil }
             let usdAmount = input / selectedQuote.rate
-            let newRateAmount = usdAmount * rate
+            let newRateAmount = usdAmount * quote.rate
             return self.formatter.string(from: .init(value: newRateAmount))
+        }
+        
+        func formattedRate(for quote: Model.Quote) -> String {
+            guard let selectedQuote = self.selectedQuote else { return "" }
+            let baseRate = 1 / selectedQuote.rate
+            let newRate = baseRate * quote.rate
+            return self.formatter.string(from: .init(value: newRate))
+                                 .map { $0 + ":1" } ?? ""
         }
     }
 }

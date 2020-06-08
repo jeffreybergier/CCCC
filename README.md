@@ -17,6 +17,7 @@ This project has two view models for the main view. `UserInputViewModel` and `Da
 
 ## Future Improvements
 If I had more time, I would like  to add the following features:
+- Add better error handling for network requests
 - Add Search for desired currency. Scrolling through the list can be tedious
 - Favorite important currencies that always show at the top
 - Add row selection to see which row is currently be calculated against

@@ -28,21 +28,23 @@
 
 import SwiftUI
 
-struct CurrencyEntry: View {
-    @ObservedObject var viewModel: ViewModel
-    var body: some View {
-        HStack {
-            Text("🇺🇸").font(.largeTitle)
-            TextField("Enter USD", text: self.$viewModel.userInput)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .keyboardType(.decimalPad)
-                .font(.title)
-            Button(action: { self.viewModel.userInput = "" }, label: { Text("✖️") })
+extension Converter {
+    struct Entry: View {
+        @ObservedObject var viewModel: ViewModel
+        var body: some View {
+            HStack {
+                Text("🇺🇸").font(.largeTitle)
+                TextField("Enter USD", text: self.$viewModel.userInput)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .font(.title)
+                Button(action: { self.viewModel.userInput = "" }, label: { Text("✖️") })
+            }
         }
     }
 }
 
-extension CurrencyEntry {
+extension Converter.Entry {
     class ViewModel: ObservableObject {
 
         @Published var userInput: String
@@ -65,14 +67,14 @@ extension CurrencyEntry {
     }
 }
 
-struct CurrencyEntry_Previews1: PreviewProvider {
+struct Entry_Preview1: PreviewProvider {
     static var previews: some View {
-        CurrencyEntry(viewModel: .init(userInput: "100000"))
+        Converter.Entry(viewModel: .init(userInput: "100000"))
     }
 }
 
-struct CurrencyEntry_Previews2: PreviewProvider {
+struct Entry_Preview2: PreviewProvider {
     static var previews: some View {
-        CurrencyEntry(viewModel: .init(userInput: ""))
+        Converter.Entry(viewModel: .init(userInput: ""))
     }
 }

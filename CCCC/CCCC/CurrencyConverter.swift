@@ -31,12 +31,12 @@ import SwiftUI
 struct Converter: View {
     
     @ObservedObject var dataSource: AbstractCurrencyDataSource
-    @ObservedObject var viewModel = CurrencyEntry.ViewModel()
+    @ObservedObject var viewModel = Entry.ViewModel()
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                CurrencyEntry(viewModel: self.viewModel)
+                Entry(viewModel: self.viewModel)
                     .padding()
                 Divider()
                 Switch(value: self.dataSource.model,
@@ -59,7 +59,7 @@ extension Converter {
     // on the state of the mdoel
     fileprivate struct Switch: View {
         let value: CurrencyDataSource.Base.Value
-        let viewModel: CurrencyEntry.ViewModel
+        let viewModel: Entry.ViewModel
         var body: some View {
             switch value {
             case .initialLoad:

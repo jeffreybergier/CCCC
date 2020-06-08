@@ -30,7 +30,7 @@ import SwiftUI
 
 struct CurrencyTable: View {
     let quotes: [CurrencyModel.Quote]
-    @ObservedObject var viewModel: CurrencyEntry.ViewModel
+    @ObservedObject var viewModel: Converter.Entry.ViewModel
     var body: some View {
         List(self.quotes) { quote in
             ViewSwitch(quote: quote,

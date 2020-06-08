@@ -81,8 +81,8 @@ class ModelTests: XCTestCase {
         let cache = Cacher.Cache(expirationDate: now, payload: model)
         
         self.token =
-            cacheWrite(cache)
-                .flatMap { cacheRead() }
+            Converter.DataViewModel.cacheWrite(cache)
+                .flatMap { Converter.DataViewModel.cacheRead() }
                 .sink(receiveCompletion: {
                     guard case .finished = $0 else { XCTFail(); return; }
                     exp.fulfill()

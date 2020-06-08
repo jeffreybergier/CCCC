@@ -41,30 +41,32 @@ private let kAPIURL: URL = {
     return c.url!
 }()
 
-let networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
-    Future { promise in
-        let task = URLSession.shared.dataTask(with: kAPIURL) { (data, response, error) in
-            let q = DispatchQueue.main
-            guard response?.isValid == true else {
-                q.async { promise(.failure(error ?? NSError.generic())) }
-                return
+extension Converter.DataViewModel {
+    static let networkLoad: Cacher<CurrencyModel>.OriginalLoad = {
+        Future { promise in
+            let task = URLSession.shared.dataTask(with: kAPIURL) { (data, response, error) in
+                let q = DispatchQueue.main
+                guard response?.isValid == true else {
+                    q.async { promise(.failure(error ?? NSError.generic())) }
+                    return
+                }
+                if let error = error {
+                    q.async { promise(.failure(error)) }
+                    return
+                }
+                guard let data = data else {
+                    q.async { promise(.failure(NSError.generic())) }
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(CurrencyModel.self, from: data)
+                    q.async { promise(.success(model)) }
+                } catch {
+                    q.async { promise(.failure(error)) }
+                }
             }
-            if let error = error {
-                q.async { promise(.failure(error)) }
-                return
-            }
-            guard let data = data else {
-                q.async { promise(.failure(NSError.generic())) }
-                return
-            }
-            do {
-                let model = try JSONDecoder().decode(CurrencyModel.self, from: data)
-                q.async { promise(.success(model)) }
-            } catch {
-                q.async { promise(.failure(error)) }
-            }
+            task.resume()
         }
-        task.resume()
     }
 }
 

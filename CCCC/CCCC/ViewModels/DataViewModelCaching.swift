@@ -34,36 +34,38 @@ private let kCacheURL: URL = {
     return cache.appendingPathComponent("CCCC_cache.plist")
 }()
 
-let cacheRead: Cacher<CurrencyModel>.CacheRead = {
-    Future { promise in
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                let data = try Data(contentsOf: kCacheURL)
-                let decode = try PropertyListDecoder().decode(Cacher<CurrencyModel>.Cache.self, from: data)
-                DispatchQueue.main.async {
-                    promise(.success(decode))
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    promise(.failure(error))
+extension Converter.DataViewModel {
+    static let cacheRead: Cacher<CurrencyModel>.CacheRead = {
+        Future { promise in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    let data = try Data(contentsOf: kCacheURL)
+                    let decode = try PropertyListDecoder().decode(Cacher<CurrencyModel>.Cache.self, from: data)
+                    DispatchQueue.main.async {
+                        promise(.success(decode))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        promise(.failure(error))
+                    }
                 }
             }
         }
     }
-}
-
-let cacheWrite: Cacher<CurrencyModel>.CacheWrite = { cache in
-    Future { promise in
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                let data = try PropertyListEncoder().encode(cache)
-                try data.write(to: kCacheURL)
-                DispatchQueue.main.async {
-                    promise(.success(()))
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    promise(.failure(error))
+    
+    static let cacheWrite: Cacher<CurrencyModel>.CacheWrite = { cache in
+        Future { promise in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    let data = try PropertyListEncoder().encode(cache)
+                    try data.write(to: kCacheURL)
+                    DispatchQueue.main.async {
+                        promise(.success(()))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        promise(.failure(error))
+                    }
                 }
             }
         }

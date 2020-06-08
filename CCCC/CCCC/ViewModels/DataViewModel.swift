@@ -35,7 +35,7 @@ extension Converter {
     // See `SwiftPreviewsContent.swift` for the mock subclass for Swift Previews
     class ProductionDataViewModel: DataViewModel {
         init() {
-            super.init(networkLoad: networkLoad, expiresIn: 60*30) // 30 minute timer
+            super.init(networkLoad: DataViewModel.networkLoad, expiresIn: 60*30) // 30 minute timer
         }
     }
     
@@ -51,8 +51,8 @@ extension Converter {
              expiresIn: TimeInterval)
         {
             self.cacher = Cacher<CurrencyModel>(originalLoad: networkLoad,
-                                                cacheRead: cacheRead,
-                                                cacheWrite: cacheWrite,
+                                                cacheRead: DataViewModel.cacheRead,
+                                                cacheWrite: DataViewModel.cacheWrite,
                                                 expiresIn: expiresIn)
             self.token = self.cacher.observe.assign(to: \.model, on: self)
         }

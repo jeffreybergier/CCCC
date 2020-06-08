@@ -35,7 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-        let contentView = CurrencyConverter(dataSource: CurrencyDataSource())
+        let contentView = Converter(dataSource: CurrencyDataSource())
 
         // Use a UIHostingController as window root view controller.
         let windowScene = scene as! UIWindowScene
@@ -49,6 +49,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 struct SceneDelegate_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyConverter(dataSource: SWIFT_PREVIEWS_currencyDataSource())
+        Converter(dataSource: SWIFT_PREVIEWS_currencyDataSource())
     }
 }

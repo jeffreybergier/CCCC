@@ -28,7 +28,7 @@
 
 import SwiftUI
 
-struct CurrencyConverter: View {
+struct Converter: View {
     
     @ObservedObject var dataSource: AbstractCurrencyDataSource
     @ObservedObject var viewModel = CurrencyEntry.ViewModel()
@@ -39,45 +39,47 @@ struct CurrencyConverter: View {
                 CurrencyEntry(viewModel: self.viewModel)
                     .padding()
                 Divider()
-                ViewSwitch(value: self.dataSource.model,
-                           viewModel: self.viewModel)
+                Switch(value: self.dataSource.model,
+                       viewModel: self.viewModel)
             }
             .navigationBarTitle("Ｃ四つ", displayMode: .inline)
         }
     }
 }
 
-struct CurrencyConverter_Previews: PreviewProvider {
+struct Converter_Preview: PreviewProvider {
     static var previews: some View {
-        CurrencyConverter(dataSource: SWIFT_PREVIEWS_currencyDataSource())
+        Converter(dataSource: SWIFT_PREVIEWS_currencyDataSource())
     }
 }
 
-// Switch statements are not allowed in ViewBuilders
-// This simple ViewSwitch helps me change the view based
-// on the state of the mdoel
-fileprivate struct ViewSwitch: View {
-    let value: CurrencyDataSource.Base.Value
-    let viewModel: CurrencyEntry.ViewModel
-    var body: some View {
-        switch value {
-        case .initialLoad:
-            return AnyView(VStack{
-                Spacer()
-                Text("Loading…")
-                Spacer()
-            })
-        case .newValue(let model):
-            return AnyView(
-                CurrencyTable(quotes: model.quotes,
-                              viewModel: self.viewModel)
-            )
-        case .error:
-            return AnyView(VStack{
-                Spacer()
-                Text("Network Error Ocurred")
-                Spacer()
-            })
+extension Converter {
+    // Switch statements are not allowed in ViewBuilders
+    // This simple Switch helps me change the view based
+    // on the state of the mdoel
+    fileprivate struct Switch: View {
+        let value: CurrencyDataSource.Base.Value
+        let viewModel: CurrencyEntry.ViewModel
+        var body: some View {
+            switch value {
+            case .initialLoad:
+                return AnyView(VStack{
+                    Spacer()
+                    Text("Loading…")
+                    Spacer()
+                })
+            case .newValue(let model):
+                return AnyView(
+                    CurrencyTable(quotes: model.quotes,
+                                  viewModel: self.viewModel)
+                )
+            case .error:
+                return AnyView(VStack{
+                    Spacer()
+                    Text("Network Error Ocurred")
+                    Spacer()
+                })
+            }
         }
     }
 }

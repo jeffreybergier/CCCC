@@ -95,27 +95,26 @@ class Cacher<T: Codable & Hashable> {
             self._observe.send(.initialLoad)
         }
 
-
-
-        self.token = self.cacheRead()                             // 1) Try to load from the cache
+        let timerFireDate = Date()
+        self.token = self.cacheRead()                                // 1) Try to load from the cache
             .tryMap { cache in
                 guard cache.expirationDate.timeIntervalSince(Date()) > 0
-                    else { throw NSError.generic() }              // 2) If the cache is expired throw an error down the stream.
-                return cache.payload                              //    If there is no error, pass the payload down the stream.
+                    else { throw NSError.generic() }                 // 2) If the cache is expired throw an error down the stream.
+                return cache.payload                                 //    If there is no error, pass the payload down the stream.
             }
-            .catch { [originalLoad] _ in return originalLoad() }  // 3) If cache error, perform `originalLoad`
+            .catch { [originalLoad] _ in return originalLoad() }     // 3) If cache error, perform `originalLoad`
             .map { [expiresIn] in
-                Cache(expirationDate: Date() + expiresIn - 1,     // 4) Map new payload for caching
-                      payload: $0)                                //    Subtract 1 second so cache is expired when timer fires
+                Cache(expirationDate: timerFireDate + expiresIn - 1, // 4) Map new payload for caching
+                      payload: $0)                                   //    Subtract 1 second so cache is expired when timer fires
             }
-            .flatMap { [cacheWrite] cache in cacheWrite(cache)    // 5) Save new cache to disk
-                .map { cache.payload } }                          // 6) Map so final payload can be observed
+            .flatMap { [cacheWrite] cache in cacheWrite(cache)       // 5) Save new cache to disk
+                .map { cache.payload } }                             // 6) Map so final payload can be observed
             .sink(receiveCompletion: { [weak self] in
                     self?.invalidateToken()
                     guard case .failure(let error) = $0 else { return }
                     self?._observe.send(.error(error))
                 }, receiveValue: { [weak self] in
-                    self?._observe.send(.newValue($0))            // 7) Send the final payload through `observe` publisher
+                    self?._observe.send(.newValue($0))               // 7) Send the final payload through `observe` publisher
                     self?.invalidateToken()
                 })
     }

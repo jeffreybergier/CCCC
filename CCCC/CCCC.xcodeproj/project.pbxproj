@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		486E8FEC248B7BF600095128 /* NetworkLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FEB248B7BF600095128 /* NetworkLoad.swift */; };
-		486E8FEE248B806500095128 /* CacheReadWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FED248B806500095128 /* CacheReadWrite.swift */; };
+		486E8FEC248B7BF600095128 /* DataViewModelNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FEB248B7BF600095128 /* DataViewModelNetworking.swift */; };
+		486E8FEE248B806500095128 /* DataViewModelCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FED248B806500095128 /* DataViewModelCaching.swift */; };
 		486E8FF0248B84EE00095128 /* CurrencyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FEF248B84EE00095128 /* CurrencyModel.swift */; };
 		486E8FF2248B868C00095128 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF1248B868C00095128 /* ModelTests.swift */; };
 		486E8FF4248BB3BF00095128 /* ConverterList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486E8FF3248BB3BF00095128 /* ConverterList.swift */; };
@@ -38,8 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		486E8FEB248B7BF600095128 /* NetworkLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLoad.swift; sourceTree = "<group>"; };
-		486E8FED248B806500095128 /* CacheReadWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheReadWrite.swift; sourceTree = "<group>"; };
+		486E8FEB248B7BF600095128 /* DataViewModelNetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModelNetworking.swift; sourceTree = "<group>"; };
+		486E8FED248B806500095128 /* DataViewModelCaching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModelCaching.swift; sourceTree = "<group>"; };
 		486E8FEF248B84EE00095128 /* CurrencyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyModel.swift; sourceTree = "<group>"; };
 		486E8FF1248B868C00095128 /* ModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
 		486E8FF3248BB3BF00095128 /* ConverterList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterList.swift; sourceTree = "<group>"; };
@@ -96,6 +96,8 @@
 			children = (
 				486E8FFD248DD61500095128 /* InputViewModel.swift */,
 				486E8FF7248BC98A00095128 /* DataViewModel.swift */,
+				486E8FEB248B7BF600095128 /* DataViewModelNetworking.swift */,
+				486E8FED248B806500095128 /* DataViewModelCaching.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -112,8 +114,6 @@
 			isa = PBXGroup;
 			children = (
 				48AFA37F248A2DA0002CAFDC /* Cacher.swift */,
-				486E8FEB248B7BF600095128 /* NetworkLoad.swift */,
-				486E8FED248B806500095128 /* CacheReadWrite.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -273,11 +273,11 @@
 				486E8FF8248BC98A00095128 /* DataViewModel.swift in Sources */,
 				48AFA380248A2DA0002CAFDC /* Cacher.swift in Sources */,
 				486E8FFC248BD74500095128 /* SwiftPreviewsContent.swift in Sources */,
-				486E8FEE248B806500095128 /* CacheReadWrite.swift in Sources */,
+				486E8FEE248B806500095128 /* DataViewModelCaching.swift in Sources */,
 				486E8FF6248BC37B00095128 /* ConverterEntry.swift in Sources */,
 				48AFA35C248A2BA5002CAFDC /* SceneDelegate.swift in Sources */,
 				48AFA35E248A2BA5002CAFDC /* Converter.swift in Sources */,
-				486E8FEC248B7BF600095128 /* NetworkLoad.swift in Sources */,
+				486E8FEC248B7BF600095128 /* DataViewModelNetworking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

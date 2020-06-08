@@ -108,7 +108,7 @@ fileprivate struct QuoteWrapper: Codable, Hashable {
     }
 }
 
-fileprivate let flagMap: [String: String] = [
+private let flagMap: [String: String] = [
     "FJD": "🇫🇯",
     "TWD": "🇹🇼",
     "SLL": "🇸🇱",

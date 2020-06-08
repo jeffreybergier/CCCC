@@ -28,13 +28,15 @@
 
 import SwiftUI
 
-struct CurrencyTable: View {
-    let quotes: [CurrencyModel.Quote]
-    @ObservedObject var viewModel: Converter.Entry.ViewModel
-    var body: some View {
-        List(self.quotes) { quote in
-            ViewSwitch(quote: quote,
-                       amount: self.viewModel.formattedPrice(withRate: quote.rate))
+extension Converter {
+    struct List: View {
+        let quotes: [CurrencyModel.Quote]
+        @ObservedObject var viewModel: Converter.Entry.ViewModel
+        var body: some View {
+            SwiftUI.List(self.quotes) { quote in
+                ViewSwitch(quote: quote,
+                           amount: self.viewModel.formattedPrice(withRate: quote.rate))
+            }
         }
     }
 }
@@ -122,16 +124,16 @@ extension CurrencyModel.Quote: Identifiable {
     }
 }
 
-struct CurrencyTable_Preview1: PreviewProvider {
+struct List_Preview1: PreviewProvider {
     static var previews: some View {
         let data: [CurrencyModel.Quote] = TESTING_model.quotes
-        return CurrencyTable(quotes: data, viewModel: .init(userInput: "100"))
+        return Converter.List(quotes: data, viewModel: .init(userInput: "100"))
     }
 }
 
-struct CurrencyTable_Preview3: PreviewProvider {
+struct List_Preview2: PreviewProvider {
     static var previews: some View {
         let data: [CurrencyModel.Quote] = TESTING_model.quotes
-        return CurrencyTable(quotes: data, viewModel: .init(userInput: "100000000"))
+        return Converter.List(quotes: data, viewModel: .init(userInput: "100000000"))
     }
 }

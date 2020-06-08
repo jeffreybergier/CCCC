@@ -70,8 +70,8 @@ extension Converter {
                 })
             case .newValue(let model):
                 return AnyView(
-                    CurrencyTable(quotes: model.quotes,
-                                  viewModel: self.viewModel)
+                    List(quotes: model.quotes,
+                         viewModel: self.viewModel)
                 )
             case .error:
                 return AnyView(VStack{

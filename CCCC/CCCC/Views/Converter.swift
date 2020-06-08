@@ -47,12 +47,6 @@ struct Converter: View {
     }
 }
 
-struct Converter_Preview: PreviewProvider {
-    static var previews: some View {
-        Converter(data: SWIFT_PREVIEWS_currencyDataSource(), userInput: .init(userInput: "100"))
-    }
-}
-
 extension Converter {
     // Switch statements are not allowed in ViewBuilders
     // This simple Switch helps me change the view based
@@ -81,5 +75,11 @@ extension Converter {
                 })
             }
         }
+    }
+}
+
+struct Converter_Preview: PreviewProvider {
+    static var previews: some View {
+        Converter(data: SWIFT_PREVIEWS_currencyDataSource(), userInput: .init(userInput: "100"))
     }
 }

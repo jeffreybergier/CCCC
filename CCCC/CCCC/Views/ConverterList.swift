@@ -41,64 +41,28 @@ extension Converter {
     }
 }
 
-// Switch statements are not allowed in ViewBuilders
-// This simple ViewSwitch helps me change the view based
-// on the state of the mdoel
-fileprivate struct ViewSwitch: View {
-    let quote: CurrencyModel.Quote
-    let amount: String?
-    var body: some View {
-        if let amount = self.amount {
-            return AnyView(
-                WithPriceCell(flag: quote.flag,
-                              code: quote.code,
-                              amount: amount,
-                              rate: formattedRate(quote.rate))
-            )
-        } else {
-            return AnyView(
-                WithOutPriceCell(flag: quote.flag,
-                                 code: quote.code,
-                                 rate: formattedRate(quote.rate))
-            )
-        }
-    }
-}
-
-fileprivate struct WithPriceCell: View {
-    let flag: String
-    let code: String
-    let amount: String
-    let rate: String
-    var body: some View {
-        HStack(alignment: .lastTextBaseline) {
-            Text(self.flag)
-                .font(.largeTitle)
-            Text(self.amount)
-                .lineLimit(1)
-                .font(Font.title.monospacedDigit())
-            Text(self.code)
-                .font(.headline)
-            Spacer()
-            Text(self.rate)
-                .font(Font.subheadline.monospacedDigit())
-        }
-    }
-}
-
-fileprivate struct WithOutPriceCell: View {
-    let flag: String
-    let code: String
-    let rate: String
-    var body: some View {
-        HStack(alignment: .lastTextBaseline) {
-            Text(self.flag)
-                .font(.largeTitle)
-            Text(self.code)
-                .font(.title)
-            Spacer()
-            Text(self.rate)
-                .font(Font.subheadline.monospacedDigit())
+extension Converter.List {
+    // Switch statements are not allowed in ViewBuilders
+    // This simple ViewSwitch helps me change the view based
+    // on the state of the model
+    fileprivate struct ViewSwitch: View {
+        let quote: CurrencyModel.Quote
+        let amount: String?
+        var body: some View {
+            if let amount = self.amount {
+                return AnyView(
+                    WithPriceCell(flag: quote.flag,
+                                  code: quote.code,
+                                  amount: amount,
+                                  rate: formattedRate(quote.rate))
+                )
+            } else {
+                return AnyView(
+                    WithOutPriceCell(flag: quote.flag,
+                                     code: quote.code,
+                                     rate: formattedRate(quote.rate))
+                )
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ import Foundation
 // See `SwiftPreviewsContent.swift` for the dummy subclass for Swift Previews
 class CurrencyDataSource: AbstractCurrencyDataSource {
     init() {
-        super.init(networkLoad: networkLoad, expiresIn: 60*30) // 30 minute timer
+        super.init(networkLoad: networkLoad, expiresIn: 60*60*24) // 30 minute timer
     }
 }
 

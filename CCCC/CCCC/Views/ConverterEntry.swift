@@ -46,26 +46,31 @@ extension Converter {
                     .font(.body)
                     .multilineTextAlignment(self.userInput.isAmountEntered ? .leading : .center)
                     .onTapGesture { withAnimation { self.keyboardPresented = true } }
-                Button(action: {
-                    guard self.keyboardPresented == false else {
-                        withAnimation { self.keyboardPresented = false }
-                        UIApplication.shared.endEditing()
-                        return
-                    }
-                    // First delete the amount
-                    // If the amount is already deleted then clear
-                    // the selected Quote
-                    if self.userInput.isAmountEntered {
-                        self.userInput.resetAmountEntered()
-                    } else {
-                        self.userInput.selectedQuote = nil
-                    }
-                }, label: {
-                    Text(self.keyboardPresented ? "Done" : "✖️")
-                        .font(.headline)
-                })
+                DoneOrClearButton
             }
             .disabled(!self.userInput.isQuoteSelected)
+        }
+        
+        private var DoneOrClearButton: some View {
+            if self.keyboardPresented {
+                return
+                    Button(action: {
+                        withAnimation { self.keyboardPresented = false }
+                        UIApplication.shared.endEditing()
+                    }, label: { Text("Done").font(.headline) })
+            } else {
+                return
+                    Button(action: {
+                        // First delete the amount
+                        // If the amount is already deleted then clear
+                        // the selected Quote
+                        if self.userInput.isAmountEntered {
+                            self.userInput.resetAmountEntered()
+                        } else {
+                            self.userInput.selectedQuote = nil
+                        }
+                    }, label: { Text("✖️") })
+            }
         }
     }
 }
